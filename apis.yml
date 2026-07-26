@@ -1,8 +1,32 @@
 aid: ensighten
+accessModel:
+  pricing: unknown
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Unknown
+  confidence: low
+  source: []
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/ensighten.png
 name: Ensighten
-description: 'Ensighten is a company surfaced as a portfolio company of insight-partners and added to
-  the API Evangelist network as a stub for enrichment. Sector: cybersecurity. This profile is a lead awaiting
-  the enrichment pipeline.'
+description: >-
+  Ensighten is an enterprise tag management, data governance, and client-side
+  website security platform. It gives digital, marketing, and privacy teams
+  centralized control over the third-party tags, scripts, and vendor code that
+  run on their web and mobile properties, enforcing consent and privacy rules
+  (GDPR, CCPA) at the point of data collection. The platform combines server-
+  and client-side tag management, malicious-script and data-leakage detection
+  (client-side security), and consent management. Ensighten was acquired by CHEQ
+  (CHEQ AI Technologies Ltd.) and is now delivered as part of CHEQ's Control &
+  Compliance / Go-to-Market Security suite; the ensighten.com domain
+  301-redirects to cheq.ai. This company profile was surfaced as an Insight
+  Partners portfolio lead and enriched by the API Evangelist pipeline. Ensighten
+  publishes no public REST API, OpenAPI specification, SDK, or developer portal;
+  it is a hosted SaaS console (manage.ensighten.com) with a Zendesk-based help
+  center, so most spec-derived artifacts are not applicable.
 url: https://raw.githubusercontent.com/api-evangelist/ensighten/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -10,12 +34,19 @@ x-backed-by:
 - insight-partners
 x-tier: stub
 x-tier-reason: portfolio-lead
+x-parent-company: cheq
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-19'
 tags:
 - Company
 - Cybersecurity
+- Tag Management
+- Data Governance
+- Client-Side Security
+- Consent Management
+- Privacy Compliance
+- Marketing Technology
 apis: []
 maintainers:
 - FN: Kin Lane
@@ -24,4 +55,30 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
-  url: http://www.ensighten.com/
+  url: https://cheq.ai/ensighten/
+- type: Login
+  url: https://manage.ensighten.com/
+- type: Support
+  url: https://help.ensighten.com/hc/en-us
+- type: HelpCenter
+  url: https://help.ensighten.com/hc/en-us
+- type: Blog
+  url: https://cheq.ai/blog/
+- type: TermsOfService
+  url: https://cheq.ai/cheq-terms-of-service/
+- type: PrivacyPolicy
+  url: https://cheq.ai/website-privacy-policy/
+- type: TrustCenter
+  url: https://cheq.ai/trust/
+- type: Compliance
+  url: https://cheq.ai/trust/
+- type: TrustCenter
+  name: Ensighten Trust Center (artifact)
+  url: security/ensighten-trust-center.yml
+- type: DomainSecurity
+  url: security/ensighten-domain-security.yml
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence
