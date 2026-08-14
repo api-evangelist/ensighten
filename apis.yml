@@ -24,20 +24,28 @@ description: >-
   Compliance / Go-to-Market Security suite; the ensighten.com domain
   301-redirects to cheq.ai. This company profile was surfaced as an Insight
   Partners portfolio lead and enriched by the API Evangelist pipeline. Ensighten
-  publishes no public REST API, OpenAPI specification, SDK, or developer portal;
-  it is a hosted SaaS console (manage.ensighten.com) with a Zendesk-based help
-  center, so most spec-derived artifacts are not applicable.
+  does publish a public REST contract: the Ensighten Manage API, documented as
+  an API Blueprint at manageexternalapi.docs.apiary.io and served in production
+  from manage-api.ensighten.com. It covers 66 operations across Spaces, Publish
+  Paths, Deployments, Conditions, Data Definitions, Event Definitions, Labels,
+  Users, Roles, SCIM 2.0 user/group provisioning, Git-enabled spaces, and TDN
+  jobs. Authentication is either an X-API-Key API key or an OAuth 2.0 Resource
+  Owner Password Credentials bearer token from /auth/token.
 url: https://raw.githubusercontent.com/api-evangelist/ensighten/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - insight-partners
-x-tier: stub
-x-tier-reason: portfolio-lead
+x-tier: enriched
+x-tier-reason: >-
+  Promoted from stub on 2026-08-13. The prior profile recorded "no public REST
+  API"; contract discovery found the Ensighten Manage API — 66 operations,
+  first-party, contract updated 2026-07-14 — published as an API Blueprint on
+  Apiary and live at manage-api.ensighten.com.
 x-parent-company: cheq
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-19'
+modified: '2026-08-13'
 tags:
 - Company
 - Cybersecurity
@@ -47,7 +55,51 @@ tags:
 - Consent Management
 - Privacy Compliance
 - Marketing Technology
-apis: []
+apis:
+- aid: ensighten:manage-api
+  name: Ensighten Manage API
+  description: >-
+    The REST Manage API used by Ensighten Manage customers to administer tag
+    management programmatically. Sixty-six operations covering Spaces, Publish
+    Paths, Deployments (create, update, enable/disable, commit/uncommit,
+    archive, merge across spaces), Conditions, Data Definitions, Event
+    Definitions, Labels, Users, Roles, SCIM 2.0 user and group provisioning,
+    Git-enabled space commits, and TDN jobs. Authentication is an X-API-Key
+    header key (prefix ens_) or an OAuth 2.0 Resource Owner Password
+    Credentials bearer token issued by POST /auth/token. Responses use a
+    consistent {code, message, description} error envelope; rate-limited
+    endpoints return X-Rate-Limit-* headers and 429 on exhaustion.
+  humanURL: https://manageexternalapi.docs.apiary.io/
+  baseURL: https://manage-api.ensighten.com
+  tags:
+  - Tag Management
+  - Deployments
+  - SCIM
+  - Provisioning
+  - Data Governance
+  properties:
+  - type: OpenAPI
+    url: openapi/ensighten-manage-api-openapi.yml
+  - type: APIBlueprint
+    url: openapi/_original/ensighten-manage-api-apiary-blueprint.json
+  - type: Documentation
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: APIReference
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: Authentication
+    url: authentication/ensighten-authentication.yml
+  - type: ErrorCatalog
+    url: errors/ensighten-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/ensighten-rate-limits.yml
+  - type: Conventions
+    url: conventions/ensighten-conventions.yml
+  - type: DataModel
+    url: data-model/ensighten-data-model.yml
+  - type: Overlay
+    url: overlays/ensighten-manage-api-overlay.yaml
+  - type: Sandbox
+    url: sandbox/ensighten-sandbox.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -77,8 +129,72 @@ common:
   url: security/ensighten-trust-center.yml
 - type: DomainSecurity
   url: security/ensighten-domain-security.yml
+- type: Documentation
+  name: Ensighten Manage API reference
+  url: https://manageexternalapi.docs.apiary.io/
+- type: APIReference
+  url: https://manageexternalapi.docs.apiary.io/
+- type: GettingStarted
+  url: https://help.ensighten.com/hc/en-us/sections/22957479812369
+- type: GitHubOrganization
+  url: https://github.com/Ensighten
+- type: Packages
+  url: packages/ensighten-packages.yml
+- type: SDKs
+  name: First-party npm packages (React Native bridges to the native mobile SDKs)
+  url: packages/ensighten-packages.yml
+- type: Conformance
+  url: conformance/ensighten-conformance.yml
+- type: Lifecycle
+  url: lifecycle/ensighten-lifecycle.yml
+- type: Deprecation
+  name: Bootstrap Version Support Policy (V1-V8 deprecated)
+  url: lifecycle/ensighten-lifecycle.yml
+- type: Plans
+  url: plans/ensighten-plans-pricing.yml
+- type: ChangeLog
+  url: changelog/ensighten-changelog.yml
+- type: LLMsTxt
+  url: llms/ensighten-llms.txt
+- type: AgentSkill
+  url: skills/_index.yml
+- type: DataModel
+  url: data-model/ensighten-data-model.yml
 x-enrichment:
-  date: '2026-07-19'
-  status: backfilled
+  date: '2026-08-13'
+  status: enriched
+  artifacts_added: 21
   pass: local-v1
-  note: backfilled from .gitignore signal + verified work evidence
+  note: >-
+    Overturned the prior "no public REST API" finding. STEP 0b contract
+    discovery located the Ensighten Manage API as an API Blueprint at
+    https://jsapi.apiary.io/apis/manageexternalapi/blueprint. Ownership proven
+    from the document itself (owner "Ensighten", urls.production
+    https://manage-api.ensighten.com/, description "the REST Manage API that
+    can be used by Ensighten Manage customers") and confirmed by a live 401
+    from manage-api.ensighten.com carrying the documented error envelope.
+x-enrichment-not-emitted:
+  note: >-
+    Pointers deliberately WITHHELD because the underlying surface does not
+    exist. Recorded so a later pass does not re-litigate them.
+  MCPServer: >-
+    mcp/ensighten-mcp.yml is a DERIVED candidate with deployment.mode none.
+    No server exists (MCP registry 0 results, no npm package, no repo), so no
+    MCPServer pointer is emitted.
+  WellKnown: >-
+    Every /.well-known/ path missed on every host. www.ensighten.com and
+    manage.ensighten.com return HTTP 200 with an HTML shell for every path — a
+    soft-200 false positive, recorded as a miss in
+    well-known/ensighten-well-known.yml.
+  SecurityTxt: No security.txt is served on any host.
+  AgentCard: No agent card at either well-known path on any host.
+  Security: >-
+    No vulnerability disclosure policy, security.txt Policy field, or bug
+    bounty program was found.
+  Idempotency: >-
+    The contract documents no idempotency support of any kind — no
+    Idempotency-Key header and no de-duplication window.
+  Webhooks: No webhook, callback or event surface exists; async work is polled.
+  StatusPage: status.ensighten.com does not resolve; status.cheq.ai returns 403.
+  Pricing: cheq.ai/pricing/ returns 404; enterprise contact-sales only.
+  Postman: No public Postman collection or workspace was found.
