@@ -43,7 +43,7 @@ x-tier-reason: >-
   first-party, contract updated 2026-07-14 — published as an API Blueprint on
   Apiary and live at manage-api.ensighten.com.
 x-parent-company: cheq
-specificationVersion: '0.20'
+specificationVersion: '0.23'
 created: '2026-07-17'
 modified: '2026-08-13'
 tags:
