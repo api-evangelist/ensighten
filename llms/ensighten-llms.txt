@@ -1,0 +1,88 @@
+# Ensighten
+
+> Ensighten is an enterprise tag management, data governance and client-side website security platform, now delivered as CHEQ Control & Compliance following its acquisition by CHEQ AI Technologies Ltd. It gives digital, marketing and privacy teams centralized control over the third-party tags, scripts and vendor code running on their web and mobile properties, and enforces consent and privacy rules (GDPR, CCPA) at the point of data collection. Ensighten publishes one public REST contract, the Ensighten Manage API.
+
+Generated: 2026-08-13
+Method: generated (from apis.yml plus the artifacts in this repository)
+Note: Ensighten does not serve an llms.txt on any of its own hosts (help.ensighten.com 404; www.ensighten.com and manage.ensighten.com return an HTML shell for every path). Its parent CHEQ serves a large AIOSEO-generated site index at https://cheq.ai/llms.txt, which lists CHEQ marketing and blog pages and is not an API document.
+
+## What the API is
+
+The **Ensighten Manage API** is a REST API for administering tag management programmatically: creating and publishing spaces, managing tag deployments through their lifecycle, defining targeting conditions, data definitions and events, labelling resources, and provisioning users. It is documented as an API Blueprint on Apiary and served in production from `https://manage-api.ensighten.com`.
+
+- 65 operations across 42 paths, 13 resource groups
+- Contract last updated 2026-07-14
+- Unversioned — no `/v1/` segment and no version header
+- Includes a complete SCIM 2.0 user and group provisioning surface
+
+## Authentication
+
+Two mechanisms, both over HTTPS only:
+
+- **API Key** — `X-API-Key: ens_...`, minted at Admin > API Keys in the Manage console, displayed exactly once. Not accepted on `/auth/token`.
+- **OAuth 2.0 Resource Owner Password Credentials** — `POST /auth/token` with `grant_type=password` and a Base64 `account:user:password` Authorization header, plus a `MultiFactorAuthentication` header when the account is MFA-configured. Returns a bearer token; a refresh grant uses the same endpoint.
+
+Authorization is **role-based, not scope-based**. No OAuth scopes are declared anywhere in the contract; permissions come from Manage Roles assigned to the user or to the API Key.
+
+## Things an agent must know before calling it
+
+- **A 404 from a search endpoint means "no results", not "error".** This is documented and applies to every `/search` operation and to the filtered collection GETs. Treat it as an empty array.
+- **There is no idempotency.** No `Idempotency-Key` header, no de-duplication window. A retried POST creates a duplicate.
+- **There are no webhooks.** Asynchronous work — TDN jobs, Git commits, space publishes — is discovered by polling a status endpoint.
+- **Publishing is production-affecting.** `PUT /manage/spaces/{id}/publish` pushes tag JavaScript to the customer's live public website and is limited to 5 calls per hour per account.
+- **Rate-limit headers are X-prefixed:** `X-Rate-Limit-Limit`, `X-Rate-Limit-Remaining`, `X-Rate-Limit-Reset`, with `429` on exhaustion and no `Retry-After`.
+- **Errors are not RFC 9457.** Every error is `{"code": n, "message": "...", "description": "..."}` with media type `application/json`.
+- **Pagination** is `page` / `per_page` (default 10, max 50). **Sparse fields** via `fields=id, name, address(postal)`. **Sorting** via `sort=-name, +address`.
+
+## Resource groups
+
+- Spaces — create, update, delete, publish (full and selective), publish status, commit status
+- Publish Paths — CRUD plus codeGen settings (namespace, Bootstrap versionId, minification)
+- Deployments — CRUD, search, state transitions (enable/disable/commit/uncommit/undelete/archive/unarchive), batch commit, cross-space merge
+- Conditions — CRUD and search; targeting criteria by host, path, geo, browser, threat type and more
+- Data Definitions — CRUD, search, enable/disable; JavaScript extractors with persistence scopes
+- Event Definitions — CRUD and search; page_action, data and named event types
+- Labels — search and batch assign/remove against ERN-addressed resources
+- Users, Roles — CRUD and search
+- SCIM 2.0 — `/scim2/Users` and `/scim2/Groups`, full RFC 7644 verb set including PATCH
+- GIT — commit status for Git-enabled spaces
+- TDN — Tag Delivery Network job listing and status
+
+Resources carry a secondary string identity, the **Ensighten Resource Name**: `ern:ens:manage::{resource-type}:{resource-id}`.
+
+## Specs
+
+- [OpenAPI 3.1 (derived)](openapi/ensighten-manage-api-openapi.yml): mechanical conversion of the published API Blueprint
+- [API Blueprint (verbatim)](openapi/_original/ensighten-manage-api-apiary-blueprint.json): the provider-published contract as fetched
+- [Overlay](overlays/ensighten-manage-api-overlay.yaml): API Evangelist annotations
+
+## Artifacts
+
+- [Authentication](authentication/ensighten-authentication.yml)
+- [Conventions](conventions/ensighten-conventions.yml)
+- [Error catalog](errors/ensighten-problem-types.yml)
+- [Rate limits](rate-limits/ensighten-rate-limits.yml)
+- [Data model](data-model/ensighten-data-model.yml)
+- [Conformance](conformance/ensighten-conformance.yml)
+- [Lifecycle](lifecycle/ensighten-lifecycle.yml)
+- [Sandbox / mock](sandbox/ensighten-sandbox.yml)
+- [Packages](packages/ensighten-packages.yml)
+- [Plans and pricing](plans/ensighten-plans-pricing.yml)
+- [Changelog](changelog/ensighten-changelog.yml)
+- [MCP candidate](mcp/ensighten-mcp.yml)
+- [Well-known probe](well-known/ensighten-well-known.yml)
+- [Agent skills](skills/_index.yml)
+
+## Docs
+
+- [Manage API reference](https://manageexternalapi.docs.apiary.io/)
+- [Help Center](https://help.ensighten.com/hc/en-us)
+- [Ensighten Academy](https://academy.ensighten.com/hc/en-us)
+- [Product page](https://cheq.ai/ensighten/)
+- [Manage console (login)](https://manage.ensighten.com/)
+- [Trust center](https://cheq.ai/trust/)
+- [GitHub organization](https://github.com/Ensighten)
+
+## Not published
+
+No OpenAPI (API Blueprint only), no MCP server, no A2A agent card, no webhooks or AsyncAPI, no public Postman collection, no status page, no changelog, no public pricing, no CLI, no Manage API client library in any language, and no `/.well-known/` document on any host.

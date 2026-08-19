@@ -1,0 +1,34 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://cheq.ai/ensighten/ and a probe of https://cheq.ai/pricing/ on
+  2026-08-13
+plan_count: 0
+note: >-
+  Neither Ensighten nor its CHEQ parent publishes plans, tiers, list prices or
+  usage quotas for the Ensighten / CHEQ Control & Compliance product line. The
+  go-to-market is enterprise contact-sales only: cheq.ai/pricing/ returns HTTP
+  404, and the product page at cheq.ai/ensighten/ offers a demo request rather
+  than a signup or a price. The Manage API is bundled with a Manage licence
+  rather than metered or sold separately — there is no API price, no free tier,
+  and no self-serve path to a key.
+plans: []
+evidence:
+- url: https://cheq.ai/pricing/
+  status: 404
+  fetched: '2026-08-13'
+  note: No pricing page exists.
+- url: https://cheq.ai/ensighten/
+  status: 200
+  fetched: '2026-08-13'
+  note: Product page; demo request only, no pricing or self-serve signup.
+- url: https://manage.ensighten.com/
+  status: 200
+  fetched: '2026-08-13'
+  note: Redirects to /login — existing customers only, no public sign-up.
+access_model:
+  self_serve: false
+  free_tier: false
+  trial: false
+  sales_gate: true
+  api_metered_separately: false

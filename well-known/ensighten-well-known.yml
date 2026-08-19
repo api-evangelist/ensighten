@@ -1,0 +1,131 @@
+generated: '2026-08-13'
+method: probed
+source: live HTTP probes of every host in apis.yml plus the OpenAPI servers[] host
+note: >-
+  NO WELL-KNOWN DOCUMENT IS SERVED. Every path below missed on every host, so no
+  WellKnown or SecurityTxt pointer is emitted in apis.yml. Two of the four hosts
+  are soft-200 false positives and are recorded as misses, not hits:
+  www.ensighten.com and manage.ensighten.com answer HTTP 200 with an HTML page
+  (the marketing site and the Manage console SPA respectively) for EVERY
+  /.well-known/* path requested, including paths that cannot exist. A 200 whose
+  body is an HTML shell is not a document. manage-api.ensighten.com — the real
+  API host — returns 403 from nginx for the entire /.well-known/ prefix, and
+  cheq.ai returns a genuine 404.
+hosts:
+- host: https://manage-api.ensighten.com
+  role: API production host (OpenAPI servers[0])
+  behavior: 403 on the whole /.well-known/ prefix
+  documents:
+  - path: /.well-known/security.txt
+    status: 403
+  - path: /.well-known/openid-configuration
+    status: 403
+  - path: /.well-known/oauth-authorization-server
+    status: 403
+  - path: /.well-known/api-catalog
+    status: 403
+  - path: /.well-known/ai-plugin.json
+    status: 403
+  - path: /.well-known/agent-card.json
+    status: 403
+  - path: /.well-known/agent.json
+    status: 403
+- host: https://cheq.ai
+  role: parent-company website (ensighten.com redirects here)
+  behavior: genuine 404
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://www.ensighten.com
+  role: legacy marketing host (301 to cheq.ai/ensighten/)
+  behavior: soft-200 — returns the same 143,543-byte HTML marketing page for every path
+  soft_200: true
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    content_type: text/html
+    verdict: miss
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: text/html
+    verdict: miss
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: text/html
+    verdict: miss
+  - path: /.well-known/api-catalog
+    status: 200
+    content_type: text/html
+    verdict: miss
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    content_type: text/html
+    verdict: miss
+  - path: /.well-known/agent-card.json
+    status: 200
+    content_type: text/html
+    verdict: miss
+  - path: /.well-known/agent.json
+    status: 200
+    content_type: text/html
+    verdict: miss
+- host: https://manage.ensighten.com
+  role: Manage console (SPA, redirects to /login)
+  behavior: soft-200 — returns the same 3,600-byte SPA shell for every path
+  soft_200: true
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    content_type: text/html
+    verdict: miss
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: text/html
+    verdict: miss
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: text/html
+    verdict: miss
+  - path: /.well-known/api-catalog
+    status: 200
+    content_type: text/html
+    verdict: miss
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    content_type: text/html
+    verdict: miss
+  - path: /.well-known/agent-card.json
+    status: 200
+    content_type: text/html
+    verdict: miss
+  - path: /.well-known/agent.json
+    status: 200
+    content_type: text/html
+    verdict: miss
+- host: https://help.ensighten.com
+  role: Zendesk help center
+  behavior: genuine 404 (and 403 bot challenge on category pages)
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+summary:
+  documents_served: 0
+  real_hits: 0
+  soft_200_false_positives: 14
+  pointer_emitted: false

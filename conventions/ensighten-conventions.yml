@@ -1,0 +1,127 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://manageexternalapi.docs.apiary.io/ (API Key, Authentication, Labels and
+  "Additional documentation" sections), derived against
+  openapi/ensighten-manage-api-openapi.yml
+api: Ensighten Manage API
+transport:
+  https_only: true
+  note: >-
+    "All API requests must be made over HTTPS. Calls made over plain HTTP will
+    fail. You must authenticate for all requests."
+  media_type: application/json
+authentication:
+  styles:
+  - name: API Key
+    mechanism: X-API-Key request header
+    key_prefix: ens_
+    issued_from: Manage console → Admin → API Keys
+    shown_once: true
+    note: >-
+      "This will be the only time the API key is visible." A key can be reset
+      but not re-read. API keys are NOT accepted on /auth/token.
+  - name: OAuth 2.0 Resource Owner Password Credentials
+    mechanism: Authorization Bearer token from POST /auth/token
+    credential_encoding: >-
+      Base64 of account:user:password in the Authorization header of the token
+      request (e.g. mycompany:joe:mypassword).
+    mfa: >-
+      A MultiFactorAuthentication header carrying a 6-digit authenticator code
+      is required when the account is MFA-configured.
+    grant_type: password
+    refresh: supported (refresh grant on the same POST /auth/token endpoint)
+  authorization_model: >-
+    Role-based, not scope-based. Roles are assigned to the user or to the API
+    Key; no OAuth scopes are declared anywhere in the contract. See
+    authentication/ensighten-authentication.yml.
+  cross_link: authentication/ensighten-authentication.yml
+idempotency:
+  supported: false
+  header: null
+  note: >-
+    NO idempotency support is documented. There is no Idempotency-Key header,
+    no request-fingerprint retention window, and no safe-retry guidance
+    anywhere in the published contract; a retried POST /manage/spaces or POST
+    /manage/spaces/{spaceId}/deployments will create a duplicate. Recorded as
+    an explicit absence — no Idempotency pointer is emitted in apis.yml.
+pagination:
+  style: page-number
+  params:
+  - name: page
+    description: Get a specific page.
+  - name: per_page
+    description: Limit the per-page results. Defaults to 10, maximum 50.
+    default: 10
+    maximum: 50
+  response_fields:
+    note: >-
+      Collection endpoints return a bare JSON array with no envelope, so no
+      total/next cursor is available on most resources. The TDN jobs resource
+      is the exception and returns {totalPages, totalElements, jobs[]}.
+  empty_result_semantics: >-
+    CRITICAL — a search with no matching records returns 404 Not Found rather
+    than an empty array. Agents must treat 404 on a search endpoint as an empty
+    result set, not as a failure.
+field_selection:
+  supported: true
+  param: fields
+  style: >-
+    Comma-delimited list with hierarchical parentheses for nested objects, e.g.
+    "id, name, address(postal)". Each resource documents whether it supports it.
+  purpose: Reduce payload size over the wire.
+sorting:
+  supported: true
+  param: sort
+  style: >-
+    Comma-delimited field list. A leading "-" sorts descending; a leading "+"
+    or no prefix sorts ascending, e.g. "-name, +address".
+resource_naming:
+  scheme: ERN (Ensighten Resource Name)
+  format: 'ern:ens:manage::{resource-type}:{resource-id}'
+  purpose: >-
+    Standardized cross-platform resource identity, used as the target of Label
+    batch assign/remove operations.
+  examples:
+  - 'ern:ens:manage::condition:{condition-id}'
+  - 'ern:ens:manage::datadefinition:{datadefinition-id}'
+  - 'ern:ens:manage::deployment:space/{space-id}/deployment/{deployment-id}'
+  - 'ern:ens:manage::event:{event-id}'
+error_envelope:
+  shape: '{code, message, description}'
+  rfc9457: false
+  cross_link: errors/ensighten-problem-types.yml
+rate_limit_signaling:
+  headers:
+  - X-Rate-Limit-Limit
+  - X-Rate-Limit-Remaining
+  - X-Rate-Limit-Reset
+  status: 429
+  cross_link: rate-limits/ensighten-rate-limits.yml
+versioning:
+  api_version_in_path: false
+  api_version_in_header: false
+  note: >-
+    The Manage API carries no version segment or version header — paths are
+    /manage/... and /scim2/... unversioned. The only versioned artifact in the
+    contract is the client-side Bootstrap build (versionId 1-14), which has its
+    own support policy. See lifecycle/ensighten-lifecycle.yml.
+request_conventions:
+  search_pattern: >-
+    Most resources expose BOTH a GET collection endpoint with query filters and
+    a POST /search endpoint that takes a JSON criteria body. Conditions, Data
+    Definitions, Labels, Users and Roles expose ONLY the POST /search form.
+  action_sub_resource: >-
+    State transitions are modelled as PUT to an /{action} sub-path rather than
+    a PATCH of a status field, e.g. PUT
+    /manage/spaces/{spaceId}/deployments/{id}/{action} where action is one of
+    enable, disable, commit, uncommit, undelete, archive, unarchive.
+  batch: >-
+    Batch operations exist for deployments (PUT
+    /manage/spaces/deployments/batch/{action}) and labels (POST
+    /manage/labels/batch/assign, POST /manage/labels/batch/remove).
+schema_conventions:
+  json_schema_draft: draft-04
+  note: >-
+    Resource payload schemas are published inline in the documentation as JSON
+    Schema draft-04 ("Conforms to JSON schema draft v4 specifications").

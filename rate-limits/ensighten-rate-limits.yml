@@ -1,0 +1,50 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://manageexternalapi.docs.apiary.io/ "Additional documentation → Rate
+  Limiting"
+note: >-
+  Ensighten documents the rate-limit RUNTIME SIGNAL in full (three response
+  headers, the 429 status, and the error-envelope body) but publishes an
+  explicit numeric ceiling for only ONE endpoint. The docs state that limiting
+  is applied to "certain actions" and that the headers are returned "for
+  endpoints that are utilizing limiting", so an agent must read the headers
+  rather than assume a global quota.
+standard: RFC 6585 (429 Too Many Requests)
+headers:
+- name: X-Rate-Limit-Limit
+  description: The rate limit ceiling for that given request.
+- name: X-Rate-Limit-Remaining
+  description: The number of requests left for the defined window.
+- name: X-Rate-Limit-Reset
+  description: The remaining window, in seconds, before the rate limit resets.
+exhaustion:
+  status: 429
+  body:
+    code: 429
+    message: Rate limit ceiling reached
+    description: The maximum number of requests (50) for this resource has been reached. It will be reset in 350 seconds.
+  retry_after_header: false
+  note: >-
+    No Retry-After header is documented; the seconds-until-reset is carried in
+    X-Rate-Limit-Reset and restated in the description string.
+limits:
+- endpoint: /manage/spaces/{id}/publish
+  method: PUT
+  operation_id: putManageSpacesIdPublish
+  scope: account
+  limit: 5
+  window: 1 hour
+  source: >-
+    Published rate-limit table, https://manageexternalapi.docs.apiary.io/
+    "Additional documentation → Rate Limiting → Endpoints"
+limit_count: 1
+undocumented:
+  note: >-
+    The 429 example body references a ceiling of 50 requests for an unnamed
+    resource, which implies at least one further limited endpoint whose numeric
+    ceiling is not published. Recorded as an observation, not as a limit.
+mock_server_note: >-
+  The Apiary anonymous mock server returns its own x-apiary-ratelimit-limit: 120
+  / x-apiary-ratelimit-remaining headers. Those are Apiary's mock-hosting limits,
+  NOT Ensighten's production limits, and are excluded from limits[] above.

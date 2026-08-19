@@ -1,0 +1,87 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://manageexternalapi.docs.apiary.io/ blueprint metadata and the Publish
+  Paths codeGen field reference; live probes of status.ensighten.com and
+  status.cheq.ai on 2026-08-13
+api: Ensighten Manage API
+versioning:
+  scheme: none
+  api_version_in_path: false
+  note: >-
+    The Manage API carries no version segment or version header. Paths are
+    /manage/... and /scim2/... with no /v1/. There is therefore no way for a
+    consumer to pin a contract version, and no published policy describing how
+    breaking changes are introduced.
+  contract_last_updated: '2026-07-14'
+  contract_last_updated_source: >-
+    lastUpdated field of https://jsapi.apiary.io/apis/manageexternalapi/blueprint
+  note_on_currency: >-
+    The blueprint was updated roughly one month before this pass, so the
+    contract is actively maintained even though it is unversioned.
+deprecation:
+  api_level_policy: false
+  sunset_header: false
+  deprecation_header: false
+  note: >-
+    No RFC 8594 Sunset header, no Deprecation header, and no API-level
+    deprecation policy are documented. No operation in the contract is marked
+    deprecated.
+  product_level_policy:
+    exists: true
+    name: Bootstrap Version Support Policy
+    referenced_from: >-
+      Publish Paths → codeGen → versionId field reference at
+      https://manageexternalapi.docs.apiary.io/
+    statement: >-
+      "Versions V1 through V8 are deprecated (see the Bootstrap Version Support
+      Policy for details)."
+    deprecated_versions:
+    - v1_20190727
+    - v2_20191031
+    - v3_20200123
+    - v4_20200406
+    - v5_20200514
+    - v6_20201029
+    - v7_20220512
+    - v8_20220915
+    supported_versions:
+    - v9_20230706
+    - v10
+    - v11
+    - v12
+    - v13
+    current_default: v13
+    scope: >-
+      This governs the client-side Bootstrap build that Manage deploys to a
+      customer's pages — a real, dated deprecation ladder — NOT the REST API
+      itself. It is the only deprecation policy Ensighten publishes.
+    policy_document_reachable: false
+    policy_document_note: >-
+      The policy is named in the API reference but the Help Center that would
+      host it returns HTTP 403 to non-browser clients (Zendesk bot challenge),
+      so the document text could not be retrieved.
+status_page:
+  exists: false
+  probes:
+  - url: https://status.ensighten.com/
+    status: 000
+    note: DNS does not resolve / no connection.
+  - url: https://status.cheq.ai/
+    status: 403
+    note: Host exists but refuses the request; no public status page served.
+  note: >-
+    No public status page or uptime history was found for either the Ensighten
+    product or its CHEQ parent. No StatusPage pointer is emitted.
+sla:
+  published: false
+  note: No public SLA or uptime commitment was found.
+support:
+  help_center: https://help.ensighten.com/hc/en-us
+  academy: https://academy.ensighten.com/hc/en-us
+  note: >-
+    Both are Zendesk properties and both return HTTP 403 to non-browser clients,
+    so their article content is not machine-readable.
+deprecated_operations:
+  count: 0
+  source: openapi/ensighten-manage-api-openapi.yml

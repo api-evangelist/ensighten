@@ -1,0 +1,349 @@
+generated: '2026-08-13'
+method: derived
+source: >-
+  openapi/ensighten-manage-api-openapi.yml and the per-resource field reference
+  tables published at https://manageexternalapi.docs.apiary.io/
+api: Ensighten Manage API
+note: >-
+  The Manage API publishes no components.schemas — entity shape is documented in
+  prose field tables and inline JSON Schema draft-04 fragments per resource
+  group. The graph below is derived from those tables plus the id-reference
+  fields observed in the example payloads. Identity is integer ids per entity,
+  with a parallel string ERN address space (ern:ens:manage::{type}:{id}) used as
+  the target of Label batch operations.
+identity:
+  primary: integer id, unique per entity type
+  cross_reference: ERN — 'ern:ens:manage::{resource-type}:{resource-id}'
+  ern_types:
+  - condition
+  - datadefinition
+  - deployment
+  - event
+entities:
+- name: Space
+  description: >-
+    The top-level container. A space groups deployments and publish paths and is
+    the unit of publishing; a space may optionally be Git-enabled.
+  path: /manage/spaces
+  fields:
+  - id
+  - name
+  - publishPaths
+  - mandatedConditionIds
+  - mandatedConditions
+  - mandatedDeployments
+  - lastPublished
+  - isGitEnabled
+  relationships:
+  - has_many: PublishPath
+    via: publishPaths
+  - has_many: Condition
+    via: mandatedConditionIds
+    note: Conditions mandated across everything in the space.
+  - has_many: Deployment
+    via: mandatedDeployments
+  - has_many: Deployment
+    via: 'path nesting /manage/spaces/{spaceId}/deployments'
+  - has_many: TdnJob
+    via: space.id
+  - has_many: GitCommit
+    via: 'path nesting /manage/spaces/{id}/commit/{commitId}'
+- name: PublishPath
+  description: >-
+    A named publish target within a space (e.g. stage, prod). Carries the code
+    generation settings for the Bootstrap build deployed to customer pages.
+  path: /manage/publishpaths
+  fields:
+  - id
+  - name
+  - codeGen
+  relationships:
+  - belongs_to: Space
+    via: publishPaths
+  - has_one: CodeGen
+    via: codeGen
+- name: CodeGen
+  description: >-
+    Embedded value object on a publish path controlling how Manage compiles and
+    names the deployed client-side Bootstrap.
+  embedded_in: PublishPath
+  fields:
+  - namespace
+  - versionId
+  - minificationLevelId
+  note: >-
+    versionId selects the Bootstrap build (1-14, default v13). Values 1-8 are
+    deprecated — see lifecycle/ensighten-lifecycle.yml.
+- name: Deployment
+  description: >-
+    A unit of tag code executed on the customer's pages, with a lifecycle status
+    machine spanning enabled/disabled/deleted/archived crossed with
+    uncommitted/committed/published.
+  path: /manage/spaces/{spaceId}/deployments
+  fields:
+  - id
+  - name
+  - spaceId
+  - spaceName
+  - status
+  - previousStatus
+  - lastPublishedStatus
+  - lastAction
+  - executionTime
+  - comments
+  - ruleId
+  - labels
+  - code
+  status_values:
+  - disabled_uncommitted
+  - disabled_committed
+  - disabled_published
+  - enabled_uncommitted
+  - enabled_committed
+  - enabled_published
+  - deleted_uncommitted
+  - deleted_committed
+  - deleted_published
+  - archived_uncommitted
+  - archived_committed
+  - archived_published
+  actions:
+  - create
+  - enable
+  - disable
+  - commit
+  - uncommit
+  - publish
+  - edit
+  - delete
+  - undelete
+  - rollback
+  - merge
+  - archive
+  - unarchive
+  execution_timing:
+  - immediate
+  - dom_parsed
+  - dom_loaded
+  relationships:
+  - belongs_to: Space
+    via: spaceId
+  - has_many: Condition
+    via: conditions associated with the deployment
+  - has_many: Label
+    via: labels
+- name: Condition
+  description: >-
+    A targeting rule deciding whether a deployment or data definition fires.
+    Composed of one or more condition-values.
+  path: /manage/conditions
+  fields:
+  - id
+  - name
+  - conditionValues
+  - mandatedInSpaces
+  - deployments
+  - labels
+  relationships:
+  - has_many: ConditionValue
+    via: conditionValues
+  - has_many: Space
+    via: mandatedInSpaces
+  - has_many: Deployment
+    via: deployments
+  - has_many: Label
+    via: labels
+- name: ConditionValue
+  description: Embedded criterion — a (typeId, comparatorId, value) triple.
+  embedded_in: Condition
+  fields:
+  - typeId
+  - comparatorId
+  - value
+  type_values:
+    2: Host
+    4: Path
+    7: Protocol
+    10: Query Pair
+    11: Hash Fragment
+    16: Platform
+    18: DateTime
+    19: Geocode
+    20: IP Address
+    26: Browser
+    27: Do Not Track
+    28: Date Recurrence
+    30: Data Definition
+    31: Query Param
+    32: Query Value
+    33: Test URLs
+    35: Threat Type
+  relationships:
+  - belongs_to: DataDefinition
+    via: 'typeId 30 (Data Definition)'
+- name: DataDefinition
+  description: >-
+    A named client-side data extraction — a JavaScript extractor, optional
+    transformation, a trigger and a persistence scope.
+  path: /manage/datadefinitions
+  fields:
+  - id
+  - name
+  - collection
+  - source
+  - extractor
+  - description
+  - enabled
+  - persistence
+  - metaDesc
+  - transformation
+  - trigger
+  - criteriaIds
+  - conditionIds
+  source_values:
+  - Manage
+  - Mobile
+  - Pulse
+  - One
+  - Attribution
+  - Inform
+  - Privacy
+  persistence_values:
+  - instance
+  - page
+  - session
+  - visitor
+  relationships:
+  - has_many: Condition
+    via: criteriaIds
+    note: Conditions gating this definition.
+  - has_many: Condition
+    via: conditionIds
+    note: Read-only inverse — conditions that consume this data definition.
+- name: EventDefinition
+  description: >-
+    A named browser or data event that can trigger deployments. Typed
+    page_action, data, or named, each with its own allowed field set.
+  path: /manage/events
+  fields:
+  - id
+  - name
+  - type
+  - conditionIds
+  - elementType
+  - trigger
+  - data
+  - dataDefinitionId
+  - labels
+  type_values:
+    0: page_action
+    1: data
+    2: named
+  relationships:
+  - has_many: Condition
+    via: conditionIds
+  - belongs_to: DataDefinition
+    via: dataDefinitionId
+  - has_many: Label
+    via: labels
+- name: Label
+  description: >-
+    A key/value tag attachable in batch to any ERN-addressable resource.
+  path: /manage/labels
+  fields:
+  - key
+  - value
+  - resources
+  relationships:
+  - has_many: 'Deployment | Condition | DataDefinition | EventDefinition'
+    via: 'resources[] of ERNs'
+- name: User
+  description: A Manage console user, authorized by assigned roles.
+  path: /manage/users
+  fields:
+  - id
+  - username
+  - firstName
+  - lastName
+  - email
+  - sendNotification
+  - multiFactorAuth
+  - roleIds
+  - isActive
+  relationships:
+  - has_many: Role
+    via: roleIds
+- name: Role
+  description: A named permission grant assigned to users and to API Keys.
+  path: /manage/roles
+  fields:
+  - id
+  - name
+  - creationDate
+  - modifiedDate
+  relationships:
+  - has_many: User
+    via: 'inverse of roleIds'
+- name: ScimUser
+  description: SCIM 2.0 projection of User, for IdP-driven provisioning.
+  path: /scim2/Users
+  standard: SCIM 2.0
+  relationships:
+  - projects: User
+  - has_many: ScimGroup
+- name: ScimGroup
+  description: SCIM 2.0 group, whose membership maps onto Manage roles/users.
+  path: /scim2/Groups
+  standard: SCIM 2.0
+  relationships:
+  - has_many: ScimUser
+- name: TdnJob
+  description: A Tag Delivery Network job, with an async status machine.
+  path: /manage/tdn/jobs
+  fields:
+  - id
+  - version
+  - user
+  - space
+  - status
+  - createdDate
+  - startDate
+  - endDate
+  status_values:
+  - PENDING
+  - INITIALIZED
+  - RUNNING
+  - INVALIDATING
+  - SUCCESSFUL
+  - FAILED
+  - TIMEOUT
+  relationships:
+  - belongs_to: Space
+    via: space.id
+  - belongs_to: User
+    via: user.id
+  note: >-
+    The only asynchronous, pollable resource in the API. There is no webhook or
+    callback — completion must be polled via GET /manage/tdn/jobs/{id}.
+- name: GitCommit
+  description: >-
+    A commit in a Git-enabled space; identified by a 40-character SHA-1.
+  path: /manage/git/commit/status/{commitId}
+  fields:
+  - commitId
+  - spaceId
+  - complete
+  - success
+  relationships:
+  - belongs_to: Space
+    via: spaceId
+summary:
+  entity_count: 15
+  root_entity: Space
+  async_entities:
+  - TdnJob
+  - GitCommit
+  event_surface: >-
+    None. No webhooks, callbacks or streaming are documented anywhere in the
+    contract; asynchronous work (TDN jobs, Git commits, space publishes) is
+    discovered by polling a status endpoint.

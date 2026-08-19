@@ -1,0 +1,3774 @@
+# Ensighten Manage API — OpenAPI 3.1
+# DERIVED by the API Evangelist enrichment pipeline from the API Blueprint that
+# Ensighten publishes at https://manageexternalapi.docs.apiary.io/
+# (AST: https://jsapi.apiary.io/apis/manageexternalapi/blueprint, owner "Ensighten",
+#  urls.production https://manage-api.ensighten.com/). Mechanical conversion only —
+#  every path, parameter and example below is verbatim from that blueprint.
+openapi: 3.1.0
+info:
+  title: Ensighten Manage API
+  version: 1.0.0
+  description: "This is the REST Manage API that can be used by Ensighten Manage customers.\n\n\nThere\
+    \ are currently two ways to authenticate through the Manage API: API Key and Username / Password.\n\
+    \n\nAll API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate\
+    \ for all requests.\n\n\nSupported Entities\n\n- \nSpaces\n\n\n\n\n- \nPublish Paths\n\n\n\n\n- \n\
+    Deployments\n\n\n\n\n- \nConditions\n\n\n\n\n- \nData Definitions\n\n\n\n\n- \nEvent Definitions\n\
+    \n\n\n\n- \nUsers\n\n\n\n\n- \nRoles\n\n\n\n\n- \nSCIM 2.0\n\n\n\n\n- \nGit\n\n\n\n\n- \nTDN"
+  contact:
+    name: Ensighten Support
+    url: https://help.ensighten.com/hc/en-us
+  x-derived-from: API Blueprint published by Ensighten at https://manageexternalapi.docs.apiary.io/
+  x-blueprint-last-updated: '2026-07-14T18:41:23.848Z'
+servers:
+- url: https://manage-api.ensighten.com
+  description: Production (from the Apiary blueprint urls.production)
+- url: https://private-anon-6a32b48ac3-manageexternalapi.apiary-mock.com
+  description: Apiary anonymous mock server (example payloads only)
+tags:
+- name: Authentication
+  description: 'Requests using a username and password for authentication follow the Resource Owner Password
+    Flow of the OAuth 2.0
+
+    specification.
+
+
+
+    API Request
+
+    Once a token has been retrieved using the /auth/token process below,  include it in all API calls
+    using the Authorization header.
+
+
+
+    Example
+
+    Authorization: Bearer 2YotnFZFEjr1zCsicMWpAA'
+- name: Spaces
+  description: 'CRUD operations with Spaces.
+
+
+
+    Space specific fields
+
+
+
+
+    Field
+
+    Required
+
+    Description
+
+    Valid Values
+
+
+
+
+
+    name
+
+    Y
+
+    The name of the space
+
+    A name up to 255 characters
+
+
+
+    publishPaths
+
+    Y
+
+    A list of either existing paths (provide id) or new ones (provide name)
+
+    An array of paths (e.g. [{"id": 1665}, {"publishPath": "stage"}])
+
+
+
+    mandatedConditionIds
+
+    N
+
+    A list of valid condition ids to associate with the space
+
+    An array of ids (e.g. [67275, 67228])
+
+
+
+    mandatedConditions
+
+    N
+
+    A list of conditions associated with this deployment
+
+    An array of objects containing condition id and name (e.g. [{"id": 51234, "name": "demoAllPages"}])
+
+
+
+    mandatedDeployments
+
+    N
+
+    A list of deployments mandated by the space
+
+    An array of objects containing deployment id, deployment name, space id and space name (e.g. [{"id":
+    51234, "name": "demoAllPages", "spaceId": 1234, "spaceName": "example"}])
+
+
+
+
+    JSON Schema
+
+    Conforms to JSON schema draft v4 '
+- name: Publish Paths
+  description: 'CRUD operations with Publish Paths.
+
+
+
+    For further details or guidance on configuring Publish Path settings, please consult our Help Center
+    article available here.
+
+
+
+    Publish Path specific fields
+
+
+
+
+    Field
+
+    Required
+
+    Description
+
+    Valid Values
+
+
+
+
+
+    name
+
+    Y
+
+    The name of the publish path
+
+    A name up to 30 characters
+
+
+
+    codeGen
+
+    N
+
+    Code generation settings for the publish path
+
+    An object containing codegen configuration (see below)
+
+
+
+
+    Codegen specific fields
+
+    These fields are nested within the codeGen object. If the codeGen object is omitted on create, the
+    defaults indicated below will be applied. On update, only the fields provided will be modified.
+
+
+
+
+
+
+    Field
+
+    Required
+
+    Description
+
+    Valid Values
+
+
+
+
+
+    namespace
+
+    N
+
+    Parent object reference for the publish path
+
+    A name up to 30 characters
+
+
+    Defaults to "Bootstrapper" if none provided
+
+
+
+    versionId
+
+    N
+
+    The id of the Bootstrap version name. Versions V1 through V8 are depr'
+- name: Deployments
+  description: "CRUD operations with Deployments.\n\n\nImportant Deployment specific fields\n\n\n\nField\n\
+    Description\nValid Values\n\n\n\n\nid\nThe deployment id\n\n\n\nname\nThe name of the deployment\n\
+    A name up to 255 characters\n\n\nspaceId\nThe id of the space this deployment is available in\n\n\n\
+    \nspaceName\nThe name of the space this deployment is available in\n\n\n\nstatus\nRefers to state\
+    \ the deployment is in.\nThis is sent back as a field in response to GET deployment.\ndisabled_uncommitted\
+    \ \n disabled_committed \n disabled_published \n  enabled_uncommitted \n enabled_committed \n enabled_published\
+    \ \n deleted_uncommitted \n deleted_committed \n deleted_published \n archived_uncommitted \n archived_committed\
+    \ \n archived_published\n\n\npreviousStatus\nRefers to the state the deployment was in before the\
+    \ last action was performed\n\n\n\nlastPublishedStatus\nRefers to the state the deployment was in\
+    \ when it was published last\n\n\n\nlastAction\nRefers to the"
+- name: Conditions
+  description: "CRUD operations with Conditions.\n\n\nImportant Condition specific fields\n\n\n\nField\n\
+    Description\nValid Values\n\n\n\n\nid\nThe condition id\n\n\n\nname\nThe name of the condition\nA\
+    \ name up to 255 characters\n\n\nconditionValues\nCriteria used to define and configure the condition\n\
+    (More information below)\n\n\nmandatedInSpaces\nSpaces where this condition is mandated\n\n\n\ndeployments\n\
+    Deployments that are associated with this condition\n\n\n\nlabels\nInformation regarding the labels\
+    \ associated with the condition\nAn array of labels (e.g. [{\"key\": \"Lifecycle\", \"value\": \"\
+    prod\"}])\n\n\n\nCondition-value specific fields\nA condition can have one or more condition-values,\
+    \ each of which is defined as an object with the following (required) properties \n\n\n\n\n\n\nField\n\
+    Description\nValid Values\n\n\n\n\ntypeId\nIndicates the type of the condition parameter\n2 (Host)\n\
+    \ 4 (Path)\n 7 (Protocol)\n 10 (Query Pair)\n 11 (Hash Fragment)\n 16 (Platform)\n 18 "
+- name: Data Definitions
+  description: "CRUD operations with Data Definitions.\n\n\nData Definitions specific fields\n\n\n\nField\n\
+    Required\nDescription\nValid Values\n\n\n\n\nname\nY\nThe name of the definition\nA name up to 255\
+    \ characters\n\n\ncollection\nY\nThe name for a collection of definitions\nA name up to 255 characters\n\
+    \n\nsource\nY\nThe source of the definition\nAccepted values are: \n Manage \n Mobile \n Pulse \n\
+    \ One \n Attribution \n Inform \n Privacy\n\n\nextractor\nY\nJavascript code for extraction\nMust\
+    \ be a valid Javascript function. e.g. function(){try{return Bootstrapper.data.extract('ec','cookie')}catch(e){return\
+    \ 'error'}}\n\n\ndescription\nN\nA description\n\n\n\nenabled\nN\nIs the definition enabled\nA boolean\
+    \ value\n\n\npersistence\nN\nIndicates the persistence type\nDefaults to \"page\" if none provided\
+    \ \n Accepted values are: \n instance \n page \n session \n visitor\n\n\nmetaDesc\nN\nIndicates the\
+    \ comparator to use for mapping the type to value\n\n\n\ntransformation\nN\nJavascr"
+- name: Event Definitions
+  description: "CRUD operations with Event Definitions.\n\n\nEvent Definition specific fields\n\n\n\n\
+    Field\nDescription\nValid Values\n\n\n\n\nname\nThe name of the definition\nA name up to 255 characters\n\
+    \n\ntype\nIndicates the type of the event definition\npage_action \n data \n named\n\n\nconditionIds\n\
+    A list of valid condition ids to associate with the event\nAn array of ids (e.g. [100, 101])\n\n\n\
+    elementType\nIndicates the element type\ncss_selector \n element_id \n element_class \n javascript\n\
+    \n\ntrigger\nIndicates what action should trigger the event\nclick \n mousedown \n mouseup \n mouseover\
+    \ \n mouseout \n mousemove \n contextmenu \n dblclick\n\n\ndata\nData to associate with a page action\
+    \ event\ne.g. \"a.add-to-cart\"\n\n\ndataDefinitionId\nThe id for a valid data definition\n\n\n\n\
+    labels\nInformation regarding the labels associated with the event\nAn array of labels (e.g. [{\"\
+    key\": \"Lifecycle\", \"value\": \"prod\"}])\n\n\n\nEvent Definition types and allowed fiel"
+- name: Labels
+  description: "CRUD operations with Labels.\n\n\nLabel specific fields\n\n\n\nField\nDescription\nValid\
+    \ Values\n\n\n\n\nkey\nThe key of the label\nA string up to 128 characters. Should only contain alphanumerics\
+    \ (a-z, A-Z, 0-9), periods, +, =, :, @, _, or -\n\n\nvalue\nThe value of the label\nA string up to\
+    \ 255 characters. Should only contain alphanumerics (a-z, A-Z, 0-9), periods, +, =, :, @, _, or -\n\
+    \n\nresources\nAn array of unique identifiers for the resources.\nEach resource is referenced by an\
+    \ Ensighten Resource Name (ERN in the format: ern:ens:manage::{resource-type}:{resource-id}\n\n\n\n\
+    Ensighten Resource Names (ERNs)\nEnsighten Resource Names (ERNs) provide a standardized way to uniquely\
+    \ identify resources across the Ensighten platform. Every ERN follows a consistent structure that\
+    \ encodes the namespace, service, resource type, and unique identifier.\n\n\nFormat\n\n\nern:ens:manage::{resource-type}:{resource-id}\n\
+    \n\n- \n{resource-t"
+- name: Users
+  description: "CRUD operations with Users.\n\n\nUser specific fields\n\n\n\nField\nDescription\nValid\
+    \ Values\n\n\n\n\nusername\nUnique identifier for the user\nUp to 255 characters; cannot include <,\
+    \ >, :, ~, +, or spaces\n\n\nfirstName\nUser's first name\nUp to 255 characters; only alphanumeric\
+    \ characters, spaces, and hyphens allowed\n\n\nlastName\nUser's last name\nUp to 255 characters; only\
+    \ alphanumeric characters, spaces, and hyphens allowed\n\n\nemail\nUser's email address\nA valid email\
+    \ format is required\n\n\nsendNotification\nIndicates whether to send a welcome email\nBoolean value,\
+    \ default is false if not specified\n\n\nmultiFactorAuth\nIs MFA enabled\nA string, defaults to \"\
+    disable\" if not specified \n Accepted values are: \n \"enable\" \n \"disable\"\n\n\nroleIds\nA list\
+    \ of valid role ids assigned to the user\nAn array of integer IDs (e.g., [100, 101])\n\n\nisActive\n\
+    Indicates whether the user account is active\nBoolean value, default is true if no"
+- name: Roles
+  description: 'CRUD operations with Roles.
+
+
+
+    Role specific fields
+
+
+
+
+    Field
+
+    Description
+
+    Valid Values
+
+
+
+
+
+    name
+
+    Unique identifier for the role
+
+    Up to 255 characters; Role name should only contain alphanumerics (a-z, A-Z, 0-9), periods, commas,
+    +, =, @, _, or -"
+
+
+
+    creationDate
+
+    Date the role was created
+
+
+
+
+    modifiedDate
+
+    Date the role was updated'
+- name: SCIM 2.0
+  description: 'SCIM2 (System for Cross-domain Identity Management) is a specification that automates
+    user and group identity provisioning across cloud-based applications and services using SSO and Identity
+    Providers. These SCIM2 API''s enable user and group management through dedicated resources. SCIM follows
+    RESTful principles, using HTTP methods with schema-defined payloads that include attributes and values.
+
+
+
+
+    While using the SCIM APIs, set the value of the Accept header as application/scim+json.
+
+
+
+
+
+    It is suggested to authenticate with the APIs using Authorization: Bearer ens_01.... However, the
+    use of X-API-KEY: ens_01... is also supported.
+
+
+
+
+    SCIM 2.0 User specific fields
+
+
+
+
+    Field
+
+    Description
+
+    Valid Values
+
+
+
+
+
+    userName
+
+    Unique identifier for the user
+
+    Up to 255 characters; cannot include <, >, :, ~, +, or spaces
+
+
+
+    name
+
+    User''s name object containing givenName and familyName
+
+    Object with givenName and '
+- name: GIT
+  description: 'Operations specific to Git enabled spaces.
+
+
+
+    Git specific fields
+
+
+
+
+    Field
+
+    Description
+
+    Valid Values
+
+
+
+
+
+    commitId
+
+    Commit ID
+
+    A SHA-1 hash, 40 characters long'
+- name: TDN
+  description: "Retrieve TDN job information\n\n\nJSON Schema\nConforms to JSON schema draft v4 specifications\n\
+    \n\n{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"description\": \"Get job\
+    \ response\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"id\": {\n            \"\
+    type\": \"string\"\n        },\n        \"version\": {\n            \"type\": \"integer\"\n      \
+    \  },\n        \"user\": {\n            \"type\": \"object\",\n            \"properties\": {\n   \
+    \             \"id\": {\n                    \"type\": \"integer\"\n                },\n         \
+    \       \"name\": {\n                    \"type\": \"string\"\n                }\n            },\n\
+    \            \"required\": [\n                \"id\",\n                \"name\"\n            ]\n \
+    \       },\n        \"space\": {\n            \"type\": \"object\",\n            \"properties\": {\n\
+    \                \"id\": {\n                    \"type\": \"integer\"\n                },\n      \
+    \          \"name\": {\n               "
+paths:
+  /auth/token:
+    post:
+      operationId: postAuthToken
+      summary: Username/Password/MultiFactor Authentication / Refreshing Access Tokens
+      tags:
+      - Authentication
+      security: []
+      description: 'In order to gain an access token for use with the API a call must be made using a
+        valid account name, user name, and password. If the account is MFA configured, MFA verification
+        code is also needed.
+
+
+
+        The Authorization header contains the Base64 encoded concatenation of the account name, user name,
+        and password.
+
+        For example, the value mycompany:joe:mypassword would be encoded and used in the header value.
+
+
+
+        The MultiFactorAuthentication header is needed if the account is MFA configured which is a 6 digits
+        number that is created from Google Authentication App on the phone.
+
+
+
+        The grant_type of password must be included in the body.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                access_token: 2YotnFZFEjr1zCsicMWpAA
+                token_type: bearer
+                expires_in: 3600
+                refresh_token: tGzv3JOkF0XG5Qx2TlKWIA
+      requestBody:
+        required: true
+        content:
+          application/json:
+            examples: {}
+  /manage/spaces:
+    get:
+      operationId: getManageSpaces
+      summary: Search spaces
+      tags:
+      - Spaces
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: A search with no matching records returns 404 Not Found instead of an empty array.
+        Treat this 404 as an empty result set.
+      parameters:
+      - name: name
+        in: query
+        required: false
+        description: Get spaces with the name.
+        schema:
+          type: string
+        example: myspace
+      - name: publishPath
+        in: query
+        required: false
+        description: get spaces that are associated with a specific publish path.
+        schema:
+          type: string
+        example: mypath
+      - name: page
+        in: query
+        required: false
+        description: Get a specific page
+        schema:
+          type: number
+        example: '1'
+      - name: per_page
+        in: query
+        required: false
+        description: Limit the per page results and defaults to 10 with a maximum of 50.
+        schema:
+          type: number
+        example: '10'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+              - id: 606
+                name: stage
+                mandatedConditionIds:
+                - 67275
+                - 67228
+                mandatedConditions:
+                - id: 67275
+                  name: tr_aug5_condition
+                - id: 67228
+                  name: tr_sep5_condition
+                publishPaths:
+                - id: 1665
+                  publishPath: stage
+                lastPublished: '2015-05-17T04:00:26.000Z'
+                mandatedDeployments: []
+              - id: 607
+                name: prod
+                mandatedConditionIds:
+                - 67275
+                - 67228
+                mandatedConditions:
+                - id: 67275
+                  name: tr_aug5_condition
+                - id: 67228
+                  name: tr_sep5_condition
+                publishPaths:
+                - id: 1666
+                  publishPath: prod
+                lastPublished: '2015-07-15T04:12:26.000Z'
+                mandatedDeployments:
+                - id: 12345
+                  name: d1
+                  spaceId: 54321
+                  spaceName: s1
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No spaces could be found given the passed criteria.
+    post:
+      operationId: postManageSpaces
+      summary: Create a space
+      tags:
+      - Spaces
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: stage
+              publishPaths:
+              - publishPath: stage
+              mandatedConditionIds:
+              - 67275
+              - 67228
+              isGitEnabled: true
+              mandatedDeployments:
+              - deploymentId: 1
+                spaceId: 2
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              example:
+                id: 899
+  /manage/spaces/{id}:
+    get:
+      operationId: getManageSpacesId
+      summary: Get a space by id
+      tags:
+      - Spaces
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the space id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                id: 606
+                name: stage
+                mandatedConditionIds:
+                - 67275
+                - 67228
+                mandatedConditions:
+                - id: 67275
+                  name: tr_aug5_condition
+                - id: 67228
+                  name: tr_sep5_condition
+                publishPaths:
+                - id: 1665
+                  publishPath: stage
+                lastPublished: '2015-05-17T04:00:26.000Z'
+                mandatedDeployments: []
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The space id is invalid
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No spaces could be found given the passed criteria.
+    put:
+      operationId: putManageSpacesId
+      summary: Update a space
+      tags:
+      - Spaces
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: 'When making a request to update an existing space, the publishPath field may only
+        contain existing paths
+
+        that are identified by their id.'
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the space id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: stage
+              publishPaths:
+              - id: 1665
+              mandatedConditionIds:
+              - 67275
+              - 67228
+              mandatedDeployments:
+              - deploymentId: 1
+                spaceId: 2
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The space id is invalid
+    delete:
+      operationId: deleteManageSpacesId
+      summary: Delete a space
+      tags:
+      - Spaces
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the space id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The space id is invalid
+  /manage/spaces/{id}/publish:
+    put:
+      operationId: putManageSpacesIdPublish
+      summary: Publish a space
+      tags:
+      - Spaces
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: 'When publishing a space, the process will start and return an identifier. That identifier
+
+        can be used to call the API in order to check the status of the publish.'
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the space id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                spaceId: 899
+                publishId: '123'
+                requestedDate: '2014-12-19T17:59:08.465Z'
+        '412':
+          description: Precondition Failed
+          content:
+            application/json:
+              example:
+                code: 412
+                message: Precondition Failed
+                description: The space is currently being published and thus can't be published at this
+                  time.
+    patch:
+      operationId: patchManageSpacesIdPublish
+      summary: Publish a space - Selective
+      tags:
+      - Spaces
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: 'When publishing a space, the process will start and return an identifier. That identifier
+
+        can be used to call the API in order to check the status of the publish.
+
+
+
+        Selective Publish will only publish the Deployments corresponding to the specified deploymentIds,
+        along with all non-deployment items (Conditions, Data Definitions, ...).
+
+
+
+        All specified Deployments must be committed before publishing.'
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the space id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              deploymentIds:
+              - 123
+              - 456
+              - 789
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                spaceId: 1
+                publishId: '222'
+                requestedDate: '2025-02-01T01:02:03.456Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: 'Error on publish: Tag - 123 is not committed.'
+  /manage/spaces/{id}/publish/{publishId}:
+    get:
+      operationId: getManageSpacesIdPublishPublishid
+      summary: Publish Status
+      tags:
+      - Spaces
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: Use a publish identifier to check the status of the publish action.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the space id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      - name: publishId
+        in: path
+        required: true
+        description: The identifier for the publish action.
+        schema:
+          type: string
+        example: '123'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                spaceId: 1
+                publishId: '123'
+                complete: true
+                success: true
+  /manage/spaces/{id}/commit/{commitId}:
+    get:
+      operationId: getManageSpacesIdCommitCommitid
+      summary: Commit Status
+      tags:
+      - Spaces
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: Use a commit identifier to check the status of the commit action.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the space id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      - name: commitId
+        in: path
+        required: true
+        description: The identifier for the commit action.
+        schema:
+          type: string
+        example: '456'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                spaceId: 1
+                commitId: '456'
+                complete: true
+                success: true
+  /manage/publishpaths/search:
+    post:
+      operationId: postManagePublishpathsSearch
+      summary: Search publish paths
+      tags:
+      - Publish Paths
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: A search with no matching records returns 404 Not Found instead of an empty array.
+        Treat this 404 as an empty result set.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              fields: id, clientId, name, codeGen
+              filters:
+                name:
+                - dev
+              page: 1
+              per_page: 10
+              sort: -name
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+              - id: 1234
+                clientId: 321
+                name: dev
+                codeGen:
+                  versionId: 14
+                  minificationLevelId: 1
+                  languageId: 3
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No publish paths could be found given the passed criteria.
+  /manage/publishpaths/{name}:
+    post:
+      operationId: postManagePublishpathsName
+      summary: Create a publish path
+      tags:
+      - Publish Paths
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: '[DEPRECATED] API endpoint to create a Publish Path was moved to /manage/publishpaths.'
+      parameters:
+      - name: name
+        in: path
+        required: true
+        description: Publish path name.
+        schema:
+          type: string
+        example: myPublishPath
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              example:
+                id: 1
+                publishPath: myPublishPath
+                clientId: 1
+                isDeleted: false
+                codeGenArgs:
+                  publishPathId: 1
+                  namespace: null
+                  serverComponentPath: null
+                  serverComponentRuleCodePath: null
+                  serverComponentRuleCodePathForSCTemplate: null
+                  customCodegenCommand: null
+                  codeGenVersion:
+                    id: 32
+                    version: v8_20220915
+                    description: insertScript custom attributes, Data Definition resolved status
+                  hasCustomCodeGen: false
+                  minificationLevelId: null
+                  languageId: null
+  /manage/publishpaths:
+    post:
+      operationId: postManagePublishpaths
+      summary: Create a publish path
+      tags:
+      - Publish Paths
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: my-publish-path
+              codeGen:
+                namespace: Bootstrapper
+                versionId: 14
+                minificationLevelId: 1
+                languageId: 3
+                sriHashAlgorithmId: 1
+                nexusContextId: 1
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              example:
+                id: 1
+                name: my-publish-path
+                clientId: 1
+                codeGen:
+                  namespace: Bootstrapper
+                  versionId: 14
+                  minificationLevelId: 1
+                  languageId: 3
+                  sriHashAlgorithmId: 1
+                  nexusContextId: 1
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: Publish path name "this_publish_path_has_too_many_characters" is invalid.
+                  First character must be alphanumeric, dashes and underscores are also allowed after
+                  that, and the total length must be at most 30.
+  /manage/publishpaths/{id}:
+    get:
+      operationId: getManagePublishpathsId
+      summary: Get a publish path
+      tags:
+      - Publish Paths
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the publish path id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                id: 1
+                name: my-publish-path
+                clientId: 1
+                codeGen:
+                  namespace: Bootstrapper
+                  versionId: 14
+                  minificationLevelId: 1
+                  languageId: 3
+                  sriHashAlgorithmId: 1
+                  nexusContextId: 1
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The publish path id is invalid
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: Publish Path not found
+    put:
+      operationId: putManagePublishpathsId
+      summary: Update a publish path
+      tags:
+      - Publish Paths
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the publish path id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              codeGen:
+                namespace: Bootstrapper
+                versionId: 14
+                minificationLevelId: 1
+                languageId: 3
+                sriHashAlgorithmId: 1
+                nexusContextId: 1
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                id: 1
+                name: my-publish-path
+                clientId: 1
+                codeGen:
+                  namespace: Bootstrapper
+                  versionId: 14
+                  minificationLevelId: 1
+                  languageId: 3
+                  sriHashAlgorithmId: 1
+                  nexusContextId: 1
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The publish path id is invalid
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: The publish path could not be found.
+    delete:
+      operationId: deleteManagePublishpathsId
+      summary: Delete a publish path
+      tags:
+      - Publish Paths
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the publish path id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      responses:
+        '204':
+          description: No Content
+  /manage/deployments:
+    get:
+      operationId: getManageDeployments
+      summary: Get deployments
+      tags:
+      - Deployments
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: A request where no deployments match the query parameters returns 404 Not Found instead
+        of an empty array (even when the account has no deployments yet). Treat this 404 as an empty result
+        set.
+      parameters:
+      - name: name
+        in: query
+        required: false
+        description: Get deployments with the name.
+        schema:
+          type: string
+        example: mydeployment
+      - name: spaceId
+        in: query
+        required: false
+        description: get deployments in space.
+        schema:
+          type: string
+        example: '605'
+      - name: status
+        in: query
+        required: false
+        description: get deployments that are in a given status (enabled_committed, enabled_published,
+          enabled_uncommitted, deleted_committed, deleted_published, deleted_uncommitted, disabled_committed,
+          disabled_published, disabled_uncommitted, archived_committed, archived_published, archived_uncommitted)
+        schema:
+          type: string
+        example: enabled_published
+      - name: code
+        in: query
+        required: false
+        description: get deployments with tag code.
+        schema:
+          type: string
+        example: var x = 1;
+      - name: sinceCreated
+        in: query
+        required: false
+        description: get deployments that were created on or after a date in GMT.
+        schema:
+          type: string
+        example: '2013-08-07'
+      - name: untilCreated
+        in: query
+        required: false
+        description: get deployments that were created before or on a date in GMT.
+        schema:
+          type: string
+        example: '2014-08-07'
+      - name: sinceUpdated
+        in: query
+        required: false
+        description: get deployments that were updated on or after a date in GMT.
+        schema:
+          type: string
+        example: '2014-09-07'
+      - name: untilUpdated
+        in: query
+        required: false
+        description: get deployments that were updated before or on a date in GMT.
+        schema:
+          type: string
+        example: '2014-09-07'
+      - name: page
+        in: query
+        required: false
+        description: Get a specific page. Is applicable only in conjunction with the 'per_page' parameter.
+        schema:
+          type: number
+        example: '1'
+      - name: per_page
+        in: query
+        required: false
+        description: Limit the per page results and defaults to 10 with a maximum of 50. Is applicable
+          only in conjunction with the 'page' parameter.
+        schema:
+          type: number
+        example: '10'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+              - id: 31126
+                spaceId: 605
+                name: mydeployment
+                isCustomApp: true
+                status: enabled_published
+                executionTime: immediate
+                comments: comment for the app
+                code: console.log("var x = 1;");
+                dependentDeployments:
+                - deploymentId: 51658
+                  spaceId: 1475
+                conditionIds:
+                - 67234
+                - 67268
+                eventIds: []
+                spaceName: demo
+                appId: 24
+                appName: Custom JavaScript
+                previousStatus: enabled_committed
+                lastAction: publish
+                ruleId: 1165344
+                labels:
+                - key: Lifecycle
+                  value: prod
+                modifyDate: '2014-09-07T17:43:48.000Z'
+                lastActionDate: '2014-09-07T17:43:48.000Z'
+                creationDate: '2014-08-25T17:43:48.000Z'
+                lastPublishedVid: 0
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No deployments could be found given the passed criteria.
+  /manage/deployments/search:
+    post:
+      operationId: postManageDeploymentsSearch
+      summary: Search deployments
+      tags:
+      - Deployments
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: A search with no matching records returns 404 Not Found instead of an empty array (even
+        when the account has no deployments yet). Treat this 404 as an empty result set.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              fields: id, spaceId, name, isCustomApp, status, executionTime, comments, code, dependentDeployments,
+                conditionIds, labels, ruleId, creationDate
+              sort: +name
+              filters:
+                spaceId:
+                - 605
+                name:
+                - test-deploy
+                labels:
+                  Lifecycle:
+                  - prod
+                  - stage
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+              - id: 31126
+                spaceId: 605
+                name: test-deploy
+                isCustomApp: true
+                status: enabled_uncommitted
+                executionTime: immediate
+                comments: comment for the app
+                code: console.log("testing app creation");
+                dependentDeployments:
+                - deploymentId: 51658
+                  spaceId: 1475
+                conditionIds:
+                - 67234
+                - 67268
+                labels:
+                - key: Lifecycle
+                  value: prod
+                ruleId: 1166344
+                creationDate: '2013-04-25T17:43:48.000Z'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No deployments could be found given the passed criteria.
+  /manage/spaces/{spaceId}/deployments/{id}:
+    get:
+      operationId: getManageSpacesSpaceidDeploymentsId
+      summary: Get a deployment
+      tags:
+      - Deployments
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: spaceId
+        in: path
+        required: true
+        description: Numeric id of the space that this deployment is associated with.
+        schema:
+          type: number
+        example: '605'
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the deployment to perform action with.
+        schema:
+          type: number
+        example: '31126'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                id: 31126
+                spaceId: 605
+                name: test-deploy
+                isCustomApp: true
+                status: enabled_uncommitted
+                executionTime: immediate
+                comments: comment for the app
+                code: console.log("testing app creation");
+                dependentDeployments:
+                - deploymentId: 51658
+                  spaceId: 1475
+                conditionIds:
+                - 67234
+                - 67268
+                eventIds: []
+                spaceName: demo
+                appId: 24
+                appName: Custom JavaScript
+                previousStatus: enabled_committed
+                lastAction: uncommit
+                labels:
+                - key: Lifecycle
+                  value: prod
+                modifyDate: '2013-04-25T17:43:48.000Z'
+                lastActionDate: '2013-05-25T17:43:48.000Z'
+                creationDate: '2013-03-25T17:43:48.000Z'
+                lastPublishedVid: 0
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The deployment or space id is invalid
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: The deployment could not be found.
+    put:
+      operationId: putManageSpacesSpaceidDeploymentsId
+      summary: Update a Deployment
+      tags:
+      - Deployments
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: Note - Only Custom JS deployments are able to be updated through the API.
+      parameters:
+      - name: spaceId
+        in: path
+        required: true
+        description: Numeric id of the space that this deployment is associated with.
+        schema:
+          type: number
+        example: '605'
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the deployment to perform action with.
+        schema:
+          type: number
+        example: '31126'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: test-deploy
+              executionTime: immediate
+              comments: comment for the app
+              code: console.log("testing app creation");
+              dependentDeployments:
+              - deploymentId: 51658
+                spaceId: 1475
+              conditionIds:
+              - 67234
+              - 67268
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The deployment or space id is invalid
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: Unable to find space with space id - 111111
+    delete:
+      operationId: deleteManageSpacesSpaceidDeploymentsId
+      summary: Delete a Deployment
+      tags:
+      - Deployments
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: spaceId
+        in: path
+        required: true
+        description: Numeric id of the space that this deployment is associated with.
+        schema:
+          type: number
+        example: '605'
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the deployment to perform action with.
+        schema:
+          type: number
+        example: '31126'
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The deployment or space id is invalid
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: Unable to find deployment with deployment id - 111111
+  /manage/spaces/{spaceId}/deployments:
+    post:
+      operationId: postManageSpacesSpaceidDeployments
+      summary: Create a deployment
+      tags:
+      - Deployments
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: Note - Only Custom JS deployments are able to be created through the API.
+      parameters:
+      - name: spaceId
+        in: path
+        required: true
+        description: Numeric id of the space that this deployment is associated with.
+        schema:
+          type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: test-deploy
+              executionTime: immediate
+              comments: comment for the app
+              code: console.log("testing app creation");
+              dependentDeployments:
+              - deploymentId: 51658
+                spaceId: 1475
+              conditionIds:
+              - 67234
+              - 67268
+              labels:
+              - key: Lifecycle
+                value: prod
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                id: 31126
+                spaceId: 605
+                name: test-deploy
+                isCustomApp: true
+                status: enabled_uncommitted
+                executionTime: immediate
+                comments: comment for the app
+                code: console.log("testing app creation");
+                dependentDeployments:
+                - deploymentId: 51658
+                  spaceId: 1475
+                conditionIds:
+                - 67234
+                - 67268
+                labels:
+                - key: Lifecycle
+                  value: prod
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The space id is invalid
+  /manage/spaces/{spaceId}/deployments/{id}/{action}:
+    put:
+      operationId: putManageSpacesSpaceidDeploymentsIdAction
+      summary: Enable / Disable / Commit / Uncommit / Undelete / Archive / Unarchive a Deployment
+      tags:
+      - Deployments
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: spaceId
+        in: path
+        required: true
+        description: Numeric id of the space id to perform action with.
+        schema:
+          type: number
+        example: '605'
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the deployment to perform action with.
+        schema:
+          type: number
+        example: '31126'
+      - name: action
+        in: path
+        required: true
+        description: String value to indicate if its an enable, disable, commit, uncommit, undelete, archive,
+          or unarchive operation.
+        schema:
+          type: string
+        example: enable
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                spaceId: 5511
+                commitId: '123'
+                requestedDate: '2024-01-01 12:34:56'
+                deploymentId: 68000
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The deployment or space id is invalid
+  /manage/spaces/deployments/batch/{action}:
+    put:
+      operationId: putManageSpacesDeploymentsBatchAction
+      summary: Commit / Uncommit Deployments
+      tags:
+      - Deployments
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: action
+        in: path
+        required: true
+        description: String value to indicate if its a batch commit or uncommit operation.
+        schema:
+          type: string
+        example: commit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              deploymentIds:
+              - 61367
+              - 61368
+              spaceIds:
+              - 6020
+              - 6020
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example: "{\n    \"success\": [\n        {\n            \"deploymentId\": 61367,\n     \
+                \       \"deploymentName\": \"deploy1\",\n            \"spaceId\": 6020,\n           \
+                \ \"spaceName\": \"prod\",\n            \"detail\": null,\n            \"jobId\": \"123\"\
+                \ // commitId\n        }\n    ],\n    \"failure\": [\n        {\n            \"deploymentId\"\
+                : 61368,\n            \"deploymentName\": \"deploy2\",\n            \"spaceId\": 6020,\n\
+                \            \"spaceName\": \"prod\",\n            \"detail\": \"invalid state found for\
+                \ the deployment\",\n            \"jobId\": null\n        }\n    ]\n}"
+  /manage/spaces/{spaceId}/deployments/{id}/merge/{targetSpaceId}:
+    put:
+      operationId: putManageSpacesSpaceidDeploymentsIdMergeTargetspaceid
+      summary: Merge
+      tags:
+      - Deployments
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: spaceId
+        in: path
+        required: true
+        description: Numeric id of the space that this deployment is associated with.
+        schema:
+          type: number
+        example: '605'
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the deployment to perform action with.
+        schema:
+          type: number
+        example: '31126'
+      - name: targetSpaceId
+        in: path
+        required: true
+        description: Numeric id of the target space that this deployment is to be merged into.
+        schema:
+          type: number
+        example: '706'
+      responses:
+        '204':
+          description: No Content
+  /manage/conditions/search:
+    post:
+      operationId: postManageConditionsSearch
+      summary: Search Conditions
+      tags:
+      - Conditions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: A search with no matching records returns 404 Not Found instead of an empty array (even
+        when the account has no conditions yet). Treat this 404 as an empty result set.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              fields: id, name, conditionValues, modifyDate, creationDate
+              sort: +name
+              filters:
+                spaceId:
+                - 67250
+                - -1
+                labels:
+                  Lifecycle:
+                  - prod
+                  - stage
+                eventNames:
+                - event1
+                dataDefNames:
+                - dataDef1
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+              - id: 647250
+                name: Checkout Condition
+                conditionValues:
+                - typeId: 7
+                  value: https?
+                  comparatorId: 3
+                  modifierIds: []
+                modifyDate: '2013-04-25T17:43:48.000Z'
+                creationDate: '2013-04-25T17:43:48.000Z'
+                spaceId: -1
+                spaceName: Global
+                labels:
+                - key: Lifecycle
+                  value: prod
+                mandatedInSpaces:
+                - id: 1
+                  name: dev
+                - id: 2
+                  name: stage
+                deployments:
+                - spaceId: 1
+                  spaceName: dev
+                  id: 2
+                  name: Sample Deployment
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No conditions could be found given the passed criteria.
+  /manage/conditions/{id}:
+    get:
+      operationId: getManageConditionsId
+      summary: Get a condition by id
+      tags:
+      - Conditions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the condition to perform the action with.
+        schema:
+          type: number
+        example: '1'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                id: 67250
+                name: Checkout Condition
+                conditionValues:
+                - typeId: 7
+                  comparatorId: 3
+                  value: https?
+                  modifierIds: []
+                - typeId: 2
+                  comparatorId: 3
+                  value: ^(highres\.io)$
+                  modifierIds:
+                  - 1
+                  - 2
+                - typeId: 11
+                  comparatorId: 3
+                  value: ^()$
+                  modifierIds:
+                  - 1
+                - typeId: 4
+                  comparatorId: 3
+                  value: ^(/demo)$
+                  modifierIds: []
+                - typeId: 30
+                  comparatorId: 2
+                  dataDefId: 1750
+                  value: '999'
+                  modifierIds:
+                  - 2
+                labels:
+                - key: Lifecycle
+                  value: prod
+                mandatedInSpaces:
+                - id: 4076
+                  name: NewMerchants
+                - id: 12864
+                  name: Demo
+                deployments:
+                - spaceId: 14909
+                  spaceName: Archives
+                  id: 360117
+                  name: ProductLaunch
+                - spaceId: 5572
+                  spaceName: chrome
+                  id: 343809
+                  name: VisualConfirmation
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The condition id is invalid
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No conditions could be found given the passed criteria.
+    put:
+      operationId: putManageConditionsId
+      summary: Update / Edit a condition
+      tags:
+      - Conditions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: id path parameter
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: Checkout Condition
+              conditionValues:
+              - typeId: 7
+                value: https?
+                comparatorId: 3
+                modifierIds: []
+              - typeId: 2
+                value: ^(google\.com)$
+                comparatorId: 3
+                modifierIds: []
+              - typeId: 4
+                value: ^(/finance)$
+                comparatorId: 3
+                modifierIds: []
+              - typeId: 11
+                value: ^()$
+                comparatorId: 3
+                modifierIds: []
+              - typeId: 33
+                value: google.com
+                comparatorId: 0
+                modifierIds: []
+              - typeId: 10
+                comparatorId: 0
+                modifierIds: []
+                queryParam:
+                  value: ^q$
+                  modifierIds: []
+                  comparatorId: 3
+                queryValue:
+                  name: Query Value
+                  value: ^(goog)$
+                  modifierIds: []
+                  comparatorId: 3
+              - typeId: 19
+                value: IN,US
+                comparatorId: 1
+                modifierIds: []
+              - typeId: 18
+                value: '2014-04-14T00:00:00.000Z'
+                comparatorId: 13
+                modifierIds: []
+              - typeId: 18
+                value: '2014-04-18T21:00:00.000Z'
+                comparatorId: 12
+                modifierIds: []
+              - typeId: 28
+                value: 0,2,4,6
+                comparatorId: 1
+                modifierIds: []
+              - typeId: 20
+                value: 10.0.1.5
+                comparatorId: 16
+                modifierIds: []
+              - typeId: 20
+                value: 10.0.1.1
+                comparatorId: 17
+                modifierIds: []
+              - typeId: 20
+                value: 10.0.1.23
+                comparatorId: 18
+                modifierIds: []
+              - typeId: 26
+                value: Firefox,Opera
+                comparatorId: 1
+                modifierIds: []
+              - typeId: 16
+                value: OSX,Linux
+                comparatorId: 1
+                modifierIds: []
+              spaceIds:
+              - 12345
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The condition id is invalid
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                code: 403
+                message: Forbidden
+                description: Access is denied
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: The condition could not be found
+    delete:
+      operationId: deleteManageConditionsId
+      summary: Delete a condition
+      tags:
+      - Conditions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: id path parameter
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The condition id is invalid
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                code: 403
+                message: Forbidden
+                description: Access is denied
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: condition with id - 9999999 could not be deleted - this condition does not
+                  exist
+  /manage/conditions:
+    post:
+      operationId: postManageConditions
+      summary: Create a condition
+      tags:
+      - Conditions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: A brand new condition
+              conditionValues:
+              - typeId: 7
+                value: https?
+                comparatorId: 3
+                modifierIds: []
+              - typeId: 2
+                value: ^(google\.com)$
+                comparatorId: 3
+                modifierIds: []
+              - typeId: 4
+                value: ^(/finance)$
+                comparatorId: 3
+                modifierIds: []
+              - typeId: 11
+                value: ^()$
+                comparatorId: 3
+                modifierIds: []
+              - typeId: 33
+                value: google.com
+                comparatorId: 0
+                modifierIds: []
+              - typeId: 10
+                comparatorId: 0
+                modifierIds: []
+                queryParam:
+                  value: ^q$
+                  modifierIds: []
+                  comparatorId: 3
+                queryValue:
+                  value: ^(goog)$
+                  modifierIds: []
+                  comparatorId: 3
+              - typeId: 19
+                value: IN,US
+                comparatorId: 1
+                modifierIds: []
+              - typeId: 18
+                value: '2014-04-14T00:00:00.000Z'
+                comparatorId: 13
+                modifierIds: []
+              - typeId: 18
+                value: '2014-04-18T21:00:00.000Z'
+                comparatorId: 12
+                modifierIds: []
+              - typeId: 28
+                value: 0,2,4,6
+                comparatorId: 1
+                modifierIds: []
+              - typeId: 20
+                value: 10.0.1.5
+                comparatorId: 16
+                modifierIds: []
+              - typeId: 20
+                value: 10.0.1.1
+                comparatorId: 17
+                modifierIds: []
+              - typeId: 20
+                value: 10.0.1.23
+                comparatorId: 18
+                modifierIds: []
+              - typeId: 26
+                value: Firefox,Opera
+                comparatorId: 1
+                modifierIds: []
+              - typeId: 16
+                value: OSX,Linux
+                comparatorId: 1
+                modifierIds: []
+              - typeId: 30
+                comparatorId: 2
+                dataDefId: 1750
+                value: '999'
+                modifierIds:
+                - 2
+              spaceIds:
+              - 12345
+              labels:
+              - key: Lifecycle
+                value: prod
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                id: 9821
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                code: 403
+                message: Forbidden
+                description: Access is denied
+  /manage/space/{spaceId}/conditions:
+    get:
+      operationId: getManageSpaceSpaceidConditions
+      summary: Get space conditions
+      tags:
+      - Conditions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: spaceId
+        in: path
+        required: true
+        description: Numeric spaceId of the space to perform the action with.
+        schema:
+          type: number
+        example: '1'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+              - id: 67250
+                name: Checkout Condition
+                conditionValues:
+                - typeId: 7
+                  comparatorId: 3
+                  value: https?
+                  modifierIds: []
+                - typeId: 2
+                  comparatorId: 3
+                  value: ^(highres\.io)$
+                  modifierIds:
+                  - 1
+                  - 2
+                - typeId: 11
+                  comparatorId: 3
+                  value: ^()$
+                  modifierIds:
+                  - 1
+                - typeId: 4
+                  comparatorId: 3
+                  value: ^(/demo)$
+                  modifierIds: []
+                - typeId: 30
+                  comparatorId: 2
+                  dataDefId: 1750
+                  value: '999'
+                  modifierIds:
+                  - 2
+                labels:
+                - key: Lifecycle
+                  value: prod
+                mandatedInSpaces:
+                - id: 4076
+                  name: NewMerchants
+                - id: 12864
+                  name: Demo
+                deployments:
+                - spaceId: 14909
+                  spaceName: Archives
+                  id: 360117
+                  name: ProductLaunch
+                - spaceId: 5572
+                  spaceName: chrome
+                  id: 343809
+                  name: VisualConfirmation
+  /manage/datadefinitions/search:
+    post:
+      operationId: postManageDatadefinitionsSearch
+      summary: Search Data Definitions
+      tags:
+      - Data Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: A search with no matching records returns 404 Not Found instead of an empty array (even
+        when the account has no data definitions yet). Treat this 404 as an empty result set.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              fields: id, name, source, collection, enabled, criteriaIds, conditionIds, spaceIds, creationDate,
+                labels
+              sort: +name
+              filters:
+                collection:
+                - PixelCollection
+                criteriaId:
+                - 444
+                labels:
+                  Lifecycle:
+                  - prod
+                  - stage
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+              - id: 273
+                name: vl
+                collection: PixelCollection
+                source: Pulse
+                enabled: false
+                extractor: function(){try{return Bootstrapper.data.extract('vl','cookie')}catch(e){return
+                  'error'}}
+                criteriaIds:
+                - 100
+                - 101
+                conditionIds:
+                - 444
+                spaceIds: []
+                creationDate: '2014-02-12T03:53:57.000Z'
+                fromType: 1
+                fromName: cookieName
+                fromSource: 1
+                labels:
+                - key: Lifecycle
+                  value: prod
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No data definitions could be found given the passed criteria.
+  /manage/datadefinitions/{id}:
+    get:
+      operationId: getManageDatadefinitionsId
+      summary: Get a data definition by id
+      tags:
+      - Data Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the data definition id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                id: 273
+                name: vl
+                collection: PixelCollection
+                source: Pulse
+                description: ''
+                enabled: false
+                persistence: page
+                metaDesc: {}
+                extractor: function(){try{return Bootstrapper.data.extract('vl','cookie')}catch(e){return
+                  'error'}}
+                transformation: ''
+                trigger: Bootstrapper.data.bottomOfBodyTrigger
+                criteriaIds:
+                - 100
+                - 101
+                conditionIds: []
+                spaceIds: []
+                creationDate: '2014-02-12T03:53:57.000Z'
+                fromType: 1
+                fromName: cookieName
+                fromSource: 1
+                labels:
+                - key: Lifecycle
+                  value: prod
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The data definition id is invalid
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: The data definitions could not be found.
+    delete:
+      operationId: deleteManageDatadefinitionsId
+      summary: Delete a data definition
+      tags:
+      - Data Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the data definition id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The data definition id is invalid
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                code: 403
+                message: Forbidden
+                description: The requester does not have permission to make this request.
+    put:
+      operationId: putManageDatadefinitionsId
+      summary: Update a data definition
+      tags:
+      - Data Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: 'See the documentation above on Data Definitions specific fields for more information
+        on what to provide.
+
+        Updating a Data Definition will not affect its state.'
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the data definition id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              id: 123
+              name: vl2
+              collection: PixelCollection
+              source: Pulse
+              persistence: session
+              extractor: function(){try{return Bootstrapper.data.extract('vl2','cookie')}catch(e){return
+                'error'}}
+              criteriaIds:
+              - 100
+              - 101
+              fromType: 1
+              fromName: cookieName
+              fromSource: 1
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The data definition id is invalid
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                code: 403
+                message: Forbidden
+                description: The requester does not have permission to make this request.
+  /manage/datadefinitions:
+    post:
+      operationId: postManageDatadefinitions
+      summary: Create a data definition
+      tags:
+      - Data Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: vl2
+              collection: PixelCollection
+              source: Pulse
+              persistence: session
+              extractor: function(){try{return Bootstrapper.data.extract('vl2','cookie')}catch(e){return
+                'error'}}
+              criteriaIds:
+              - 100
+              - 101
+              fromType: 1
+              fromName: cookieName
+              fromSource: 1
+              labels:
+              - key: Lifecycle
+                value: prod
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                id: 273
+                name: vl2
+                collection: PixelCollection
+                source: Pulse
+                description: ''
+                enabled: false
+                persistence: session
+                metaDesc: {}
+                extractor: function(){try{return Bootstrapper.data.extract('vl2','cookie')}catch(e){return
+                  'error'}}
+                transformation: ''
+                trigger: Bootstrapper.data.bottomOfBodyTrigger
+                criteriaIds:
+                - 100
+                - 101
+                conditionIds: []
+                spaceIds: []
+                labels:
+                - key: Lifecycle
+                  value: prod
+                creationDate: '2014-02-12T03:53:57.000Z'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                code: 403
+                message: Forbidden
+                description: The requester does not have permission to make this request.
+  /manage/datadefinitions/{id}/{action}:
+    put:
+      operationId: putManageDatadefinitionsIdAction
+      summary: Enable / Disable a Data Definition
+      tags:
+      - Data Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the data definition to perform action with.
+        schema:
+          type: number
+        example: '273'
+      - name: action
+        in: path
+        required: true
+        description: String value to indicate if its an enable or a disable
+        schema:
+          type: string
+        example: enable
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The data definition id or action is invalid
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                code: 403
+                message: Forbidden
+                description: The requester does not have permission to make this request.
+  /manage/events:
+    get:
+      operationId: getManageEvents
+      summary: Search event definitions
+      tags:
+      - Event Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: '[DEPRECATED] API endpoint to search event definitions was moved to /manage/events/search.
+
+
+
+
+        A search with no matching records returns 404 Not Found instead of an empty array (even when the
+        account has no event definitions yet). Treat this 404 as an empty result set.'
+      parameters:
+      - name: name
+        in: query
+        required: false
+        description: Get definitions with the name.
+        schema:
+          type: string
+        example: Product - Add to Cart Link
+      - name: type
+        in: query
+        required: false
+        description: get definitions that are of a certain type (page_action, data, named).
+        schema:
+          type: string
+        example: page_action
+      - name: page
+        in: query
+        required: false
+        description: Get a specific page
+        schema:
+          type: number
+        example: '1'
+      - name: per_page
+        in: query
+        required: false
+        description: Limit the per page results and defaults to 10 with a maximum of 50.
+        schema:
+          type: number
+        example: '10'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+              - id: 899
+                name: Product - Add to Cart Link
+                type: page_action
+                conditionIds:
+                - 67275
+                - 67228
+                elementType: css_selector
+                data: a.add-to-cart
+                trigger: click
+                fastBinding: true
+                allowIncompleteCalls: true
+                labels:
+                - key: Lifecycle
+                  value: prod
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No event definitions could be found given the passed criteria.
+    post:
+      operationId: postManageEvents
+      summary: Create an event definition
+      tags:
+      - Event Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: 'When creating an event definition, it can be of a specific type. See the documentation
+        above
+
+        from Event Definition types and allowed fields for more information on what to provide.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: My Event Definition
+              type: page_action
+              conditionIds:
+              - 67275
+              - 67228
+              elementType: css_selector
+              data: a.add-to-cart
+              trigger: click
+              fastBinding: true
+              allowIncompleteCalls: true
+              labels:
+              - key: Lifecycle
+                value: prod
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              example:
+                id: 899
+  /manage/events/search:
+    post:
+      operationId: postManageEventsSearch
+      summary: Search event definitions
+      tags:
+      - Event Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: A search with no matching records returns 404 Not Found instead of an empty array (even
+        when the account has no event definitions yet). Treat this 404 as an empty result set.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              fields: id, name, type, modifyDate, conditionIds, elementType, trigger, data, fastBinding,
+                allowIncompleteCalls, dataDefinitionId, fireWhenFirstSet, fireWhenValueUpdated, labels
+              filters:
+                eventName:
+                - Account - Sign Up Complete
+                - Product - Add to Cart Button
+                - Data Layer - Cart Total Updated
+                labels:
+                  Lifecycle:
+                  - prod
+                  - stage
+              page: 1
+              per_page: 10
+              sort: +name
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+              - id: 1
+                name: Account - Sign Up Complete
+                type: named
+                conditionIds:
+                - 111
+                modifyDate: '2026-01-03T03:03:03.000Z'
+                labels:
+                - key: Lifecycle
+                  value: prod
+              - id: 2
+                name: Product - Add to Cart Button
+                type: page_action
+                conditionIds:
+                - 222
+                modifyDate: '2026-01-01T01:01:01.000Z'
+                elementType: css_selector
+                trigger: click
+                data: '#addToCartButton'
+                fastBinding: true
+                allowIncompleteCalls: false
+                labels:
+                - key: Lifecycle
+                  value: prod
+              - id: 3
+                name: Data Layer - Cart Total Updated
+                type: data
+                conditionIds:
+                - 333
+                modifyDate: '2026-01-02T01:02:02.000Z'
+                dataDefinitionId: 12345
+                fireWhenFirstSet: true
+                fireWhenValueUpdated: true
+                labels:
+                - key: Lifecycle
+                  value: prod
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No event definitions could be found given the passed criteria.
+  /manage/events/{id}:
+    get:
+      operationId: getManageEventsId
+      summary: Get an event definition by id
+      tags:
+      - Event Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the event definition id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                id: 899
+                name: My Event Definition
+                type: page_action
+                conditionIds:
+                - 67275
+                - 67228
+                dataDefinitionId: 100
+                elementType: css_selector
+                data: a.add-to-cart
+                trigger: click
+                fastBinding: true
+                allowIncompleteCalls: true
+                fireWhenFirstSet: true
+                fireWhenValueUpdated: true
+                labels:
+                - key: Lifecycle
+                  value: prod
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The event definition id is invalid
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No event definitions could be found given the passed criteria.
+    put:
+      operationId: putManageEventsId
+      summary: Update an event definition
+      tags:
+      - Event Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: 'When updating an event definition, it can be of a specific type. See the documentation
+        above
+
+        from Event Definition types and allowed fields for more information on what to provide.'
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the event definition id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: My Updated Event Definition
+              type: page_action
+              conditionIds:
+              - 67275
+              - 67228
+              elementType: css_selector
+              data: a.add-to-cart
+              trigger: click
+              fastBinding: true
+              allowIncompleteCalls: true
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The event definition id is invalid
+    delete:
+      operationId: deleteManageEventsId
+      summary: Delete an event definition
+      tags:
+      - Event Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the event definition id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The event definition id is invalid
+  /manage/labels/search:
+    post:
+      operationId: postManageLabelsSearch
+      summary: Search Labels
+      tags:
+      - Labels
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: A search with no matching records returns 404 Not Found instead of an empty array (even
+        when the account has no labels yet). Treat this 404 as an empty result set.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              filters:
+                resources: []
+                labels:
+                  Lifecycle: []
+                  Owner:
+                  - marketing
+              sort: -resource
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+              - resource: ern:ens:manage::deployment:space/789/deployment/1011
+                labels:
+                - key: Lifecycle
+                  value: stage
+                - key: Owner
+                  value: marketing
+              - resource: ern:ens:manage::deployment:space/123/deployment/456
+                labels:
+                - key: Lifecycle
+                  value: prod
+                - key: Owner
+                  value: marketing
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: Input validation error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No labels could be found given the passed criteria.
+  /manage/labels/batch/assign:
+    post:
+      operationId: postManageLabelsBatchAssign
+      summary: Batch Assign Labels
+      tags:
+      - Labels
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              resources:
+              - ern:ens:manage::deployment:space/1234/deployment/5678
+              labels:
+              - key: Lifecycle
+                value: prod
+              - key: Owner
+                value: marketing
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                errors: {}
+  /manage/labels/batch/remove:
+    post:
+      operationId: postManageLabelsBatchRemove
+      summary: Batch Remove Labels
+      tags:
+      - Labels
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              resources:
+              - ern:ens:manage::deployment:space/1234/deployment/5678
+              keys:
+              - Owner
+              - Lifecycle
+              - Vendor
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                errors: {}
+  /manage/users/search:
+    post:
+      operationId: postManageUsersSearch
+      summary: Search users
+      tags:
+      - Users
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: A search with no matching records returns 404 Not Found instead of an empty array.
+        Treat this 404 as an empty result set.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              fields: id, account, clientId, email, firstName, lastName, lastLoginTimestamp, multiFactorAuth,
+                name, roles, username, isActive
+              filters:
+                username:
+                - admin
+              page: 1
+              per_page: 10
+              sort: -name
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+              - id: 3811
+                account: example-client
+                clientId: 852
+                email: jane.doe@example.com
+                firstName: Jane
+                lastName: Doe
+                lastLoginTimestamp: '2024-10-10T19:54:01.000Z'
+                multiFactorAuth: disable
+                name: Jane Doe
+                roles:
+                - id: 8515
+                  name: Account-Admin
+                - id: 8516
+                  name: Power User
+                - id: 8518
+                  name: Manage UI
+                - id: 8572
+                  name: Manage Public API
+                - id: 8575
+                  name: Certificates
+                username: jane.doe
+                isActive: true
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No users could be found given the passed criteria.
+  /manage/users/{id}:
+    get:
+      operationId: getManageUsersId
+      summary: Get a user
+      tags:
+      - Users
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the user.
+        schema:
+          type: number
+        example: '3811'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                id: 3811
+                account: example-client
+                clientId: 852
+                email: jane.doe@example.com
+                firstName: Jane
+                lastName: Doe
+                lastLoginTimestamp: '2024-10-10T19:54:01.000Z'
+                multiFactorAuth: disable
+                name: Jane Doe
+                roles:
+                - id: 8515
+                  name: Account-Admin
+                - id: 8516
+                  name: Power User
+                - id: 8518
+                  name: Manage UI
+                - id: 8572
+                  name: Manage Public API
+                - id: 8575
+                  name: Certificates
+                username: jane.doe
+                isActive: true
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The user id is invalid
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: User doesn't exist.
+    put:
+      operationId: putManageUsersId
+      summary: Update a user
+      tags:
+      - Users
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: See the documentation above on User specific fields (exclude sendNotification) for
+        more information on what to provide.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: id path parameter
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              email: jane.doe@example.com
+              firstName: Jane
+              lastName: Doe
+              username: jane.doe
+              roleIds:
+              - 8515
+              - 8516
+              isActive: true
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The user id is invalid
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: User doesn't exist.
+    delete:
+      operationId: deleteManageUsersId
+      summary: Delete a user
+      tags:
+      - Users
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: id path parameter
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The user id is invalid
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: User doesn't exist.
+  /manage/users:
+    post:
+      operationId: postManageUsers
+      summary: Create a user
+      tags:
+      - Users
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              username: jane.doe
+              email: jane.doe@example.com
+              firstName: Jane
+              lastName: Doe
+              multiFactorAuth: enable
+              roleIds:
+              - 8515
+              - 8516
+              sendNotification: true
+              isActive: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              example:
+                id: 3811
+                clientId: 852
+                account: example-client
+                username: jane.doe
+                email: jane.doe@example.com
+                firstName: Jane
+                lastName: Doe
+                multiFactorAuth: enable
+                roles:
+                - id: 8515
+                  name: Account-Admin
+                - id: 8516
+                  name: Power User
+                isActive: true
+        '400':
+          description: Returned when a username already exists for this client.
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: Username already exists for this client.
+  /manage/roles/search:
+    post:
+      operationId: postManageRolesSearch
+      summary: Search roles
+      tags:
+      - Roles
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: A search with no matching records returns 404 Not Found instead of an empty array.
+        Treat this 404 as an empty result set.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              fields: id, name, creationDate, modifiedDate
+              filters:
+                name:
+                - admin
+              page: 1
+              per_page: 10
+              sort: -name
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+              - id: 7928
+                name: Account Admin
+                creationDate: '2023-07-24T19:16:41.000Z'
+                modifiedDate: '2023-07-24T19:16:41.000Z'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No roles could be found given the passed criteria.
+  /scim2/Users:
+    post:
+      operationId: postScim2Users
+      summary: Create a User
+      tags:
+      - SCIM 2.0
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              userName: jane.doe
+              name:
+                givenName: Jane
+                familyName: Doe
+              emails:
+              - value: jane.doe@example.com
+                type: work
+              active: true
+              groups:
+              - value: '8520'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/scim+json:
+              example:
+                meta:
+                  resourceType: User
+                id: '1234'
+                userName: jane.doe
+                displayName: Jane Doe
+                name:
+                  givenName: Jane
+                  familyName: Doe
+                emails:
+                - value: jane.doe@example.com
+                  type: work
+                active: true
+                groups:
+                - value: '8520'
+                  display: group1
+                schemas:
+                - urn:ietf:params:scim:schemas:core:2.0:User
+    get:
+      operationId: getScim2Users
+      summary: Search Users
+      tags:
+      - SCIM 2.0
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/scim+json:
+              example:
+                totalResults: 1
+                itemsPerPage: 10
+                startIndex: 1
+                schemas:
+                - urn:ietf:params:scim:api:messages:2.0:ListResponse
+                Resources:
+                - meta:
+                    resourceType: User
+                  id: 2819c223-7f76-453a-919d-413861904646
+                  userName: jane.doe
+                  name:
+                    givenName: Jane
+                    familyName: Doe
+                  emails:
+                  - value: jane.doe@example.com
+                    type: work
+                  active: true
+                  groups:
+                  - value: '8520'
+                    display: group1
+                  schemas:
+                  - urn:ietf:params:scim:schemas:core:2.0:User
+  /scim2/Users/{id}:
+    get:
+      operationId: getScim2UsersId
+      summary: Get a User by id
+      tags:
+      - SCIM 2.0
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier of the user.
+        schema:
+          type: integer
+        example: '123'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/scim+json:
+              example:
+                meta:
+                  resourceType: User
+                id: '1234'
+                userName: jane.doe
+                displayName: Jane Doe
+                name:
+                  givenName: Jane
+                  familyName: Doe
+                emails:
+                - value: jane.doe@example.com
+                  type: work
+                active: true
+                groups:
+                - value: '8520'
+                  display: group1
+                schemas:
+                - urn:ietf:params:scim:schemas:core:2.0:User
+    put:
+      operationId: putScim2UsersId
+      summary: Update a User (PUT)
+      tags:
+      - SCIM 2.0
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier of the user.
+        schema:
+          type: integer
+        example: '123'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name:
+                givenName: Jane
+                familyName: Doe
+              emails:
+              - value: jane.doe@example.com
+                type: work
+              active: true
+              groups:
+              - value: '8520'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/scim+json:
+              example:
+                meta:
+                  resourceType: User
+                id: '1234'
+                userName: jane.doe
+                displayName: Jane Doe
+                name:
+                  givenName: Jane
+                  familyName: Doe
+                emails:
+                - value: jane.doe@example.com
+                  type: work
+                active: true
+                groups:
+                - value: '8520'
+                  display: group1
+                schemas:
+                - urn:ietf:params:scim:schemas:core:2.0:User
+    delete:
+      operationId: deleteScim2UsersId
+      summary: Delete a User
+      tags:
+      - SCIM 2.0
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier of the user.
+        schema:
+          type: integer
+        example: '123'
+      responses:
+        '204':
+          description: No Content
+    patch:
+      operationId: patchScim2UsersId
+      summary: Update a User (PATCH)
+      tags:
+      - SCIM 2.0
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier of the user.
+        schema:
+          type: integer
+        example: '123'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              schemas:
+              - urn:ietf:params:scim:api:messages:2.0:PatchOp
+              Operations:
+              - op: replace
+                path: name.familyName
+                value: Smith
+              - op: replace
+                path: emails[type eq "work"].value
+                value: jane.smith@example.com
+              - op: replace
+                path: active
+                value: true
+              - op: add
+                path: groups
+                value:
+                - value: '8521'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/scim+json:
+              example:
+                meta:
+                  resourceType: User
+                id: '1234'
+                userName: jane.doe
+                name:
+                  givenName: Jane
+                  familyName: Smith
+                emails:
+                - value: jane.smith@example.com
+                  type: work
+                active: true
+                groups:
+                - value: '8520'
+                  display: group1
+                - value: '8521'
+                  display: group2
+                schemas:
+                - urn:ietf:params:scim:schemas:core:2.0:User
+  /scim2/Groups:
+    get:
+      operationId: getScim2Groups
+      summary: Search Groups
+      tags:
+      - SCIM 2.0
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/scim+json:
+              example:
+                totalResults: 1
+                itemsPerPage: 10
+                startIndex: 1
+                schemas:
+                - urn:ietf:params:scim:api:messages:2.0:ListResponse
+                Resources:
+                - meta:
+                    resourceType: Group
+                  id: '8520'
+                  displayName: group1
+                  schemas:
+                  - urn:ietf:params:scim:schemas:core:2.0:Group
+  /scim2/Groups/{id}:
+    get:
+      operationId: getScim2GroupsId
+      summary: Get a Group by id
+      tags:
+      - SCIM 2.0
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier of the group.
+        schema:
+          type: integer
+        example: '123'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/scim+json:
+              example:
+                meta:
+                  resourceType: Group
+                id: '123'
+                displayName: Engineering
+                members:
+                - value: '5678'
+                  display: john.doe
+                schemas:
+                - urn:ietf:params:scim:schemas:core:2.0:Group
+    put:
+      operationId: putScim2GroupsId
+      summary: Replace Group Membership
+      tags:
+      - SCIM 2.0
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier of the group.
+        schema:
+          type: integer
+        example: '123'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              displayName: Engineering
+              members:
+              - value: '5678'
+                display: john.doe
+      responses:
+        '200':
+          description: OK
+          content:
+            application/scim+json:
+              example:
+                meta:
+                  resourceType: Group
+                id: '123'
+                displayName: Engineering
+                members:
+                - value: '5678'
+                  display: john.doe
+                schemas:
+                - urn:ietf:params:scim:schemas:core:2.0:Group
+    patch:
+      operationId: patchScim2GroupsId
+      summary: Update Group Membership
+      tags:
+      - SCIM 2.0
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier of the group.
+        schema:
+          type: integer
+        example: '123'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              schemas:
+              - urn:ietf:params:scim:api:messages:2.0:PatchOp
+              Operations:
+              - op: add
+                path: members
+                value:
+                - value: '6789'
+                  display: jane.doe
+              - op: remove
+                path: members[value eq "1234"]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/scim+json:
+              example:
+                meta:
+                  resourceType: Group
+                id: '123'
+                displayName: Product Development
+                members:
+                - value: '6789'
+                  display: jane.doe
+                schemas:
+                - urn:ietf:params:scim:schemas:core:2.0:Group
+  /manage/git/commit/status/{commitId}:
+    get:
+      operationId: getManageGitCommitStatusCommitid
+      summary: Get commit status
+      tags:
+      - GIT
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: commitId
+        in: path
+        required: true
+        description: commitId path parameter
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example: COMMIT COMPLETE
+  /manage/tdn/jobs:
+    get:
+      operationId: getManageTdnJobs
+      summary: List jobs
+      tags:
+      - TDN
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: completed
+        in: query
+        required: false
+        description: Includes completed jobs, default to false.
+        schema:
+          type: boolean
+        example: 'true'
+      - name: size
+        in: query
+        required: false
+        description: Limit the per page results, defaults to 100
+        schema:
+          type: number
+        example: '1'
+      - name: page
+        in: query
+        required: false
+        description: Results page you want to retrieve (0..N).
+        schema:
+          type: number
+        example: '0'
+      - name: sort
+        in: query
+        required: false
+        description: Sort the resulting jobs by the given field name. Acceptable field names are 'createdDate',
+          'endDate', 'id', 'startDate', 'status' and 'type'. A '-' prefix indicates sort in descending
+          order. By default we sort by id in ascending order.
+        schema:
+          type: string
+        example: +id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                jobs:
+                - createdDate: string
+                  endDate: string
+                  id: string
+                  space:
+                    id: 0
+                    name: string
+                  startDate: string
+                  status: RUNNING
+                  type: PUBLISH
+                  user:
+                    id: 0
+                    name: string
+                  version: 0
+                totalElements: 0
+                totalPages: 0
+  /manage/tdn/jobs/{id}:
+    get:
+      operationId: getManageTdnJobsId
+      summary: Get a job by id
+      tags:
+      - TDN
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the job id to retrieve.
+        schema:
+          type: number
+        example: '1'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                createdDate: string
+                endDate: string
+                id: string
+                space:
+                  id: 0
+                  name: string
+                startDate: string
+                status: RUNNING
+                type: PUBLISH
+                user:
+                  id: 0
+                  name: string
+                version: 0
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API Key created in the Admin > API Keys page of Manage. Keys are prefixed 'ens_'. Not
+        accepted on /auth/token.
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Access token obtained from POST /auth/token (OAuth 2.0 Resource Owner Password Credentials
+        flow).
+    OAuth2Password:
+      type: oauth2
+      flows:
+        password:
+          tokenUrl: https://manage-api.ensighten.com/auth/token
+          scopes: {}
+      description: Resource Owner Password Credentials flow. No OAuth scopes are documented; authorization
+        is governed by Manage Roles assigned to the user or API Key.
+  schemas:
+    Error:
+      type: object
+      description: Standard Manage API error envelope.
+      properties:
+        code:
+          type: integer
+          description: Mirrors the HTTP status code.
+        message:
+          type: string
+          description: Standard HTTP status text.
+        description:
+          type: string
+          description: Specific detail about the error.
+      required:
+      - code
+      - message
+      - description
+      example:
+        code: 400
+        message: Bad Request
+        description: A human-readable description of what went wrong.
+security:
+- ApiKeyAuth: []
+- BearerAuth: []

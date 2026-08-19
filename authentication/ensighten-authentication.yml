@@ -1,0 +1,38 @@
+generated: '2026-08-13'
+method: derived
+source: openapi/ensighten-manage-api-openapi.yml
+summary:
+  types:
+  - apiKey
+  - http
+  - oauth2
+  api_key_in:
+  - header
+  oauth2_flows:
+  - password
+schemes:
+- name: ApiKeyAuth
+  type: apiKey
+  in: header
+  parameter: X-API-Key
+  description: API Key created in the Admin > API Keys page of Manage. Keys are prefixed 'ens_'.
+    Not accepted on /auth/token.
+  sources:
+  - openapi/ensighten-manage-api-openapi.yml
+- name: BearerAuth
+  type: http
+  scheme: bearer
+  description: Access token obtained from POST /auth/token (OAuth 2.0 Resource Owner Password
+    Credentials flow).
+  sources:
+  - openapi/ensighten-manage-api-openapi.yml
+- name: OAuth2Password
+  type: oauth2
+  flows:
+  - flow: password
+    tokenUrl: https://manage-api.ensighten.com/auth/token
+    scopes: 0
+  description: Resource Owner Password Credentials flow. No OAuth scopes are documented; authorization
+    is governed by Manage Roles assigned to the user or API Key.
+  sources:
+  - openapi/ensighten-manage-api-openapi.yml

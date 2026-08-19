@@ -1,0 +1,126 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://manageexternalapi.docs.apiary.io/ and https://cheq.ai/trust/, derived
+  against openapi/ensighten-manage-api-openapi.yml
+standards:
+- id: scim2
+  name: SCIM 2.0 (RFC 7643 / RFC 7644)
+  conforms: true
+  evidence: >-
+    A dedicated "SCIM 2.0" resource group exposes the canonical SCIM endpoints
+    under /scim2 — POST/GET /scim2/Users, GET/PUT/PATCH/DELETE /scim2/Users/{id},
+    GET /scim2/Groups, GET /scim2/Groups/{id}, PUT/PATCH /scim2/Groups/{id} —
+    including the SCIM PATCH semantics for group-membership updates.
+  operations: 10
+- id: oauth2
+  name: OAuth 2.0 (RFC 6749) — Resource Owner Password Credentials grant
+  conforms: true
+  partial: true
+  evidence: >-
+    POST /auth/token with grant_type=password, plus a refresh grant on the same
+    endpoint. The docs state requests "follow the Resource Owner Password Flow
+    of the OAuth 2.0 specification". No authorization-code flow, no scopes, and
+    no /.well-known/oauth-authorization-server metadata document (probed: 403).
+  caveat: >-
+    ROPC is deprecated in OAuth 2.1 and in the OAuth 2.0 Security Best Current
+    Practice. It is the only token-issuing flow this API offers.
+- id: oidc
+  name: OpenID Connect
+  conforms: false
+  evidence: No /.well-known/openid-configuration is served on any host (probed 2026-08-13).
+- id: rfc9457
+  name: RFC 9457 Problem Details for HTTP APIs
+  conforms: false
+  evidence: >-
+    Errors use a proprietary {code, message, description} JSON envelope with
+    media type application/json, not application/problem+json.
+- id: rfc6585
+  name: RFC 6585 (429 Too Many Requests)
+  conforms: true
+  evidence: >-
+    The rate-limiting section cites RFC 6585 explicitly and returns 429 with
+    X-Rate-Limit-Limit / X-Rate-Limit-Remaining / X-Rate-Limit-Reset headers.
+- id: ietf-ratelimit-headers
+  name: IETF draft RateLimit header fields (RateLimit-Limit / RateLimit-Remaining)
+  conforms: false
+  evidence: >-
+    Uses the older X-prefixed X-Rate-Limit-* spelling rather than the
+    unprefixed IETF draft names.
+- id: json-schema-draft-04
+  name: JSON Schema draft-04
+  conforms: true
+  evidence: >-
+    Resource payload schemas are published inline as draft-04 documents
+    ("Conforms to JSON schema draft v4 specifications"); the TDN job schema
+    carries an explicit $schema of http://json-schema.org/draft-04/schema#.
+- id: json-api
+  name: JSON:API
+  conforms: false
+  evidence: Collection responses are bare JSON arrays with no JSON:API document structure.
+- id: openapi
+  name: OpenAPI
+  conforms: false
+  evidence: >-
+    The provider publishes API Blueprint (Apiary), not OpenAPI. The OpenAPI in
+    openapi/ is an API Evangelist derivation of that blueprint, not a
+    provider-published artifact.
+- id: api-blueprint
+  name: API Blueprint
+  conforms: true
+  evidence: >-
+    apiDescriptionFormat "apiblueprint" at
+    https://jsapi.apiary.io/apis/manageexternalapi/blueprint, owner "Ensighten",
+    last updated 2026-07-14.
+- id: rfc8615-well-known
+  name: RFC 8615 well-known URIs
+  conforms: false
+  evidence: >-
+    No well-known document is served on any host; the API host 403s the whole
+    prefix. See well-known/ensighten-well-known.yml.
+- id: gdpr
+  name: GDPR
+  conforms: true
+  evidence: Published on the CHEQ trust center, https://cheq.ai/trust/.
+- id: ccpa
+  name: CCPA
+  conforms: true
+  evidence: Published on the CHEQ trust center, https://cheq.ai/trust/.
+- id: soc2
+  name: SOC 2 Type II
+  conforms: true
+  evidence: Published on the CHEQ trust center, https://cheq.ai/trust/.
+- id: iso27001
+  name: ISO/IEC 27001
+  conforms: true
+  evidence: Published on the CHEQ trust center, https://cheq.ai/trust/.
+- id: iso27701
+  name: ISO/IEC 27701 (privacy information management)
+  conforms: true
+  evidence: Published on the CHEQ trust center, https://cheq.ai/trust/.
+- id: iso42001
+  name: ISO/IEC 42001 (AI management systems)
+  conforms: true
+  evidence: Published on the CHEQ trust center, https://cheq.ai/trust/.
+- id: csa-star
+  name: CSA STAR Level 1
+  conforms: true
+  evidence: Published on the CHEQ trust center, https://cheq.ai/trust/.
+- id: pci-dss
+  name: PCI DSS
+  conforms: false
+  evidence: Not claimed on the trust center; not a payments product.
+- id: hipaa
+  name: HIPAA
+  conforms: false
+  evidence: Not claimed on the trust center.
+- id: fedramp
+  name: FedRAMP
+  conforms: false
+  evidence: Not claimed on the trust center.
+summary:
+  conforms_count: 12
+  standout: >-
+    SCIM 2.0 is the strongest standards result here — a complete, canonical
+    user and group provisioning surface (10 operations) inside an otherwise
+    proprietary tag-management API.

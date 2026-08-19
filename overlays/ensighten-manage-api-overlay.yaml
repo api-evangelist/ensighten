@@ -1,0 +1,84 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Ensighten Manage API
+  version: 1.0.0
+extends: openapi/ensighten-manage-api-openapi.yml
+x-provenance:
+  generated: '2026-08-13'
+  method: generated
+  source: >-
+    API Evangelist enrichment pipeline. Captures OUR annotations on top of the
+    OpenAPI derived from Ensighten's published API Blueprint. The base document
+    is never mutated.
+actions:
+- target: $.info
+  update:
+    x-apievangelist-contract-origin: >-
+      API Blueprint published by Ensighten at
+      https://manageexternalapi.docs.apiary.io/ (owner "Ensighten",
+      urls.production https://manage-api.ensighten.com/, lastUpdated
+      2026-07-14). The provider does not publish OpenAPI; this document is a
+      mechanical conversion.
+    x-apievangelist-parent-company: CHEQ AI Technologies Ltd.
+    x-apievangelist-error-envelope: '{code, message, description} — not RFC 9457'
+    x-apievangelist-authorization-model: >-
+      Role-based. No OAuth scopes exist anywhere in the contract; permissions
+      come from Manage Roles assigned to the user or API Key.
+- target: $.info
+  update:
+    x-apievangelist-agent-warnings:
+    - >-
+      SEARCH ENDPOINTS RETURN 404 FOR AN EMPTY RESULT SET. A 404 from any
+      /search operation, or from GET /manage/spaces, /manage/deployments or
+      /manage/events with filters, means "no records matched" — not an error.
+      Do not retry and do not surface it as a failure.
+    - >-
+      NO IDEMPOTENCY. There is no Idempotency-Key header and no request
+      de-duplication. A retried POST creates a duplicate resource; a retried
+      publish republishes. Treat every non-GET as unsafe to retry blindly.
+    - >-
+      PUBLISHING IS PRODUCTION-AFFECTING. PUT /manage/spaces/{id}/publish pushes
+      tag JavaScript onto the customer's live public website and is limited to
+      5 calls per hour per account.
+    - >-
+      RATE LIMIT SIGNAL IS X-PREFIXED. Read X-Rate-Limit-Limit /
+      X-Rate-Limit-Remaining / X-Rate-Limit-Reset, not the unprefixed IETF
+      RateLimit-* names, and note there is no Retry-After header.
+- target: $.tags
+  update:
+    x-apievangelist-standards:
+      scim2: >-
+        The SCIM 2.0 tag is a genuine RFC 7643/7644 provisioning surface — the
+        strongest standards conformance in this contract.
+- target: $.paths['/manage/spaces/{id}/publish'].put
+  update:
+    x-apievangelist-consequence: high
+    x-apievangelist-rate-limit: 5 per hour, per account
+    x-apievangelist-idempotent: false
+    x-apievangelist-note: >-
+      Deploys tag code to the customer's live site. Poll GET
+      /manage/spaces/{id}/publish/{publishId} for completion.
+- target: $.paths['/manage/spaces/{spaceId}/deployments/{id}/{action}'].put
+  update:
+    x-apievangelist-consequence: high
+    x-apievangelist-idempotent: false
+    x-apievangelist-note: >-
+      State machine transition. action is one of enable, disable, commit,
+      uncommit, undelete, archive, unarchive.
+- target: $.paths['/manage/spaces/{id}'].delete
+  update:
+    x-apievangelist-consequence: high
+    x-apievangelist-idempotent: false
+- target: $.paths['/manage/tdn/jobs/{id}'].get
+  update:
+    x-apievangelist-async-pattern: poll
+    x-apievangelist-note: >-
+      There is no webhook or callback anywhere in this API. TDN job completion,
+      Git commit status and space publish status are all discovered by polling.
+- target: $.components.securitySchemes.OAuth2Password
+  update:
+    x-apievangelist-caveat: >-
+      Resource Owner Password Credentials is the only token-issuing flow. ROPC
+      is removed in OAuth 2.1 and discouraged by the OAuth 2.0 Security BCP.
+      Prefer the X-API-Key scheme, which at least avoids handling end-user
+      passwords.

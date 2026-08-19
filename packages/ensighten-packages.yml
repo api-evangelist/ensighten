@@ -1,0 +1,92 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  registry.npmjs.org metadata endpoints, api.github.com/orgs/Ensighten, and the
+  Ensighten Manage API documentation at https://manageexternalapi.docs.apiary.io/
+note: >-
+  Ensighten ships NO client library for the Manage REST API in any language.
+  The only first-party packages published to a public registry are two React
+  Native bridges to the Ensighten native mobile (iOS/Android) tag-management
+  libraries — a different product surface from the Manage API. Both are
+  authored by brad.slayter@ensighten.com, maintained by an Ensighten npm
+  account, and point at bitbucket.org/ensighten-ondemand, so first-party
+  provenance is established; both are also licensed "Proprietary" rather than
+  open source. DECAY SIGNAL: the newest of the two was last published
+  2020-02-27 — more than six years before this pass, and the Manage API
+  blueprint they would sit alongside was updated 2026-07-14. A consumer
+  adopting these today is adopting an unmaintained bridge.
+packages:
+- language: javascript
+  registry: npm
+  name: react-native-ensighten
+  url: https://www.npmjs.com/package/react-native-ensighten
+  install: npm install react-native-ensighten
+  official: true
+  version: 1.0.2
+  published: '2020-02-27'
+  license: Proprietary
+  covers: Native mobile SDK bridge (not the Manage REST API)
+  repository: https://bitbucket.org/ensighten-ondemand/react-native-ensighten
+  evidence: >-
+    registry.npmjs.org/react-native-ensighten — author
+    brad.slayter@ensighten.com; description "React Native bridge for
+    Ensighten's Native iOS and Android libraries."
+- language: javascript
+  registry: npm
+  name: react-native-ensighten-rn
+  url: https://www.npmjs.com/package/react-native-ensighten-rn
+  install: npm install react-native-ensighten-rn
+  official: true
+  version: 1.0.1
+  published: '2020-02-06'
+  license: Proprietary
+  covers: Native mobile SDK bridge (not the Manage REST API)
+  repository: https://bitbucket.org/ensighten-ondemand/react-native-ensighten
+  evidence: >-
+    registry.npmjs.org/react-native-ensighten-rn — same author and repository;
+    appears to be the earlier-named publication of the same bridge.
+registries_checked:
+- registry: npm
+  query: ensighten
+  result: 2 first-party packages found (above)
+- registry: pypi
+  result: no first-party package
+- registry: rubygems
+  result: no first-party package
+- registry: maven-central
+  result: no first-party package
+- registry: nuget
+  result: no first-party package
+- registry: pkg.go.dev
+  result: no first-party package
+- registry: packagist
+  result: no first-party package
+- registry: crates.io
+  result: no first-party package
+github:
+  org: https://github.com/Ensighten
+  public_repos: 69
+  first_party_relevant:
+  - name: Manage-Example
+    url: https://github.com/Ensighten/Manage-Example
+    description: Example repository showing the structure and format of tags and conditions.
+    pushed: '2023-08-18'
+    note: Documentation example for the Manage API payload shapes, not a client library.
+  - name: export2git
+    url: https://github.com/Ensighten/export2git
+    description: A script to export existing manage tag deployments and conditions into git-enabled spaces.
+    pushed: '2019-12-17'
+    note: Operational script; the repository contains only a LICENSE file.
+  - name: homebrew-formulae
+    url: https://github.com/Ensighten/homebrew-formulae
+    description: Homebrew formulae for running ensighten development tools.
+    pushed: '2025-05-21'
+    note: >-
+      Internal developer tooling (aws-sso, dumb-init, gitflow-ens, terraform) —
+      not a client for the Manage API.
+  note: >-
+    The remaining ~66 repositories are forks of third-party infrastructure
+    tooling (puppet, ansible, sensu, sentry, graphite) or archived front-end
+    experiments from 2011-2017. None is a Manage API client.
+sdk_count: 2
+sdk_count_manage_api: 0

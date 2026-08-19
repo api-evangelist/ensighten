@@ -1,0 +1,60 @@
+generated: '2026-08-13'
+method: probed
+source: >-
+  urls.mock of https://jsapi.apiary.io/apis/manageexternalapi/blueprint,
+  confirmed by a live request on 2026-08-13
+api: Ensighten Manage API
+note: >-
+  Ensighten publishes NO test/live key separation, no sandbox tenant, no test
+  fixtures and no time simulation. What does exist is the Apiary anonymous MOCK
+  SERVER that ships with the published blueprint: it serves the documented
+  example payloads over HTTP with no credentials at all. That is enough to
+  develop and test a client's request/response handling against the real
+  documented shapes, but it executes nothing — it is a fixture replayer, not a
+  sandbox account.
+mock_server:
+  available: true
+  type: apiary-anonymous-mock
+  url: https://private-anon-6a32b48ac3-manageexternalapi.apiary-mock.com
+  auth: none
+  verified:
+    fetched: '2026-08-13'
+    url: https://private-anon-6a32b48ac3-manageexternalapi.apiary-mock.com/manage/spaces
+    http_status: 200
+    content_type: application/json
+    note: >-
+      Returned the documented Spaces example payload (ids 606 "stage" and 607
+      "prod") verbatim.
+  caveats:
+  - >-
+    The hostname embeds an anonymous Apiary traffic token (the 'private-anon-'
+    prefix) that Apiary issues per visitor. It is a stable public mock for the
+    published document but is not a URL Ensighten advertises as an endpoint.
+  - >-
+    Responses are static examples. State is not persisted; a POST does not
+    create anything a later GET will return.
+  - >-
+    Apiary applies its own hosting quota to the mock
+    (x-apiary-ratelimit-limit: 120), unrelated to Ensighten's production limits.
+  proxy_url: https://private-anon-6a32b48ac3-manageexternalapi.apiary-proxy.com
+  proxy_note: >-
+    Apiary also exposes an inspecting proxy that forwards to production; it
+    still requires real Ensighten credentials.
+test_credentials:
+  published: false
+  note: >-
+    No test API keys, no test accounts, and no magic identifiers are published.
+    A real API Key must be minted from Admin → API Keys inside a licensed
+    Manage tenant, and it is displayed exactly once.
+key_modes:
+  test_live_separation: false
+  note: >-
+    There is no ens_test_ / ens_live_ distinction. All API keys carry the single
+    'ens_' prefix and act against the real tenant, so there is no safe way to
+    rehearse a destructive call (DELETE /manage/spaces/{id}, PUT
+    .../deployments/{id}/delete) other than against the static mock.
+time_simulation:
+  available: false
+console:
+  url: https://manage.ensighten.com/
+  note: The Manage web console is the only interactive surface; it requires a licensed tenant.

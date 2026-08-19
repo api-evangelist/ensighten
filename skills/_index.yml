@@ -1,0 +1,51 @@
+generated: '2026-08-13'
+method: generated
+source: >-
+  openapi/ensighten-manage-api-openapi.yml, conventions/ensighten-conventions.yml
+  and errors/ensighten-problem-types.yml
+api: Ensighten Manage API
+note: >-
+  Packaged Agent Skills for the marquee Manage API flows. Every operationId
+  referenced in these skills was verified against the OpenAPI derived from
+  Ensighten's published API Blueprint — none is invented. Ensighten publishes no
+  skills or AGENTS.md of its own; these are API Evangelist generations.
+skills:
+- name: ensighten-publish-a-space
+  file: ensighten-publish-a-space.md
+  description: >-
+    Publish a Manage space so its committed deployments go live, then poll to
+    completion.
+  operations: 5
+  consequence: high
+- name: ensighten-manage-a-deployment
+  file: ensighten-manage-a-deployment.md
+  description: >-
+    Find, create, edit and transition a tag deployment through its lifecycle,
+    and merge one between spaces.
+  operations: 9
+  consequence: high
+- name: ensighten-provision-users-scim
+  file: ensighten-provision-users-scim.md
+  description: >-
+    Provision users and groups via the native Users/Roles endpoints or the SCIM
+    2.0 surface.
+  operations: 16
+  consequence: medium
+skill_count: 3
+cross_cutting_rules:
+- >-
+  A 404 from any search or filtered-collection endpoint means an EMPTY RESULT
+  SET, not an error. Documented by the provider.
+- >-
+  There is no idempotency anywhere in this API. Never blind-retry a non-GET.
+- >-
+  There are no webhooks. All asynchronous work is discovered by polling.
+- >-
+  Errors always use {code, message, description}; the description field carries
+  the only actionable detail.
+- >-
+  Authorization is role-based, not scope-based. A 403 means the Role attached to
+  the API Key or user is insufficient.
+- >-
+  Rate limits signal via X-Rate-Limit-Limit / X-Rate-Limit-Remaining /
+  X-Rate-Limit-Reset, with no Retry-After.

@@ -1,0 +1,112 @@
+generated: '2026-08-13'
+method: derived
+status: candidate
+source: openapi/ensighten-manage-api-openapi.yml
+note: >-
+  Ensighten ships NO MCP server. Searched the MCP registry
+  (registry.modelcontextprotocol.io — 0 results for "ensighten"), npm (no
+  @ensighten/* or cheq MCP package), the Ensighten GitHub org (69 repos, none
+  MCP-related), and the provider documentation. The tools below are a CANDIDATE
+  set DERIVED from the real operationIds in the Manage API OpenAPI — they are a
+  proposal for what a server would expose, not something a client can connect
+  to today. No endpoint URL is asserted.
+deployment:
+  mode: none
+  auth: unknown
+  verified: derived
+  note: >-
+    Nobody ships a server — neither a remote endpoint nor a stdio package. If
+    Ensighten built one, the natural auth is the existing X-API-Key header,
+    which already carries role-based authorization.
+server:
+  name: ensighten-manage
+  transport: null
+  url: null
+searched:
+- registry: registry.modelcontextprotocol.io
+  query: ensighten
+  result: 0 servers
+  fetched: '2026-08-13'
+- registry: npm
+  query: cheq mcp / ensighten mcp
+  result: no first-party package
+  fetched: '2026-08-13'
+- source: https://github.com/Ensighten
+  result: 69 repositories, none MCP-related
+  fetched: '2026-08-13'
+tool_design_notes: >-
+  A well-shaped server would NOT mirror all 65 operations one-to-one. The
+  read/search surface is safe and agent-friendly; the publish, delete and
+  merge operations are destructive, irreversible against a live customer site,
+  and have no idempotency key to protect a retry. Those are marked
+  consequence: high below and should require explicit escalation.
+tools:
+- name: search_spaces
+  description: Search spaces by name or publish path.
+  source_operation: openapi/ensighten-manage-api-openapi.yml#getManageSpaces
+  consequence: low
+- name: get_space
+  description: Get a space by id.
+  source_operation: openapi/ensighten-manage-api-openapi.yml#getManageSpacesId
+  consequence: low
+- name: create_space
+  description: Create a space with publish paths and mandated conditions.
+  source_operation: openapi/ensighten-manage-api-openapi.yml#postManageSpaces
+  consequence: medium
+- name: publish_space
+  description: Publish a space to its publish paths.
+  source_operation: openapi/ensighten-manage-api-openapi.yml#putManageSpacesIdPublish
+  consequence: high
+  note: >-
+    Pushes tag code live to the customer's public website. Rate limited to
+    5/hour per account. Not idempotent.
+- name: get_publish_status
+  description: Poll the status of a space publish.
+  source_operation: openapi/ensighten-manage-api-openapi.yml#getManageSpacesIdPublishPublishid
+  consequence: low
+- name: search_deployments
+  description: Search deployments by name, space, status, code or date window.
+  source_operation: openapi/ensighten-manage-api-openapi.yml#getManageDeployments
+  consequence: low
+- name: get_deployment
+  description: Get a deployment in a space.
+  source_operation: openapi/ensighten-manage-api-openapi.yml#getManageSpacesSpaceidDeploymentsId
+  consequence: low
+- name: create_deployment
+  description: Create a tag deployment in a space.
+  source_operation: openapi/ensighten-manage-api-openapi.yml#postManageSpacesSpaceidDeployments
+  consequence: medium
+- name: set_deployment_state
+  description: Enable, disable, commit, uncommit, undelete, archive or unarchive a deployment.
+  source_operation: openapi/ensighten-manage-api-openapi.yml#putManageSpacesSpaceidDeploymentsIdAction
+  consequence: high
+- name: search_conditions
+  description: Search targeting conditions.
+  source_operation: openapi/ensighten-manage-api-openapi.yml#postManageConditionsSearch
+  consequence: low
+- name: search_data_definitions
+  description: Search client-side data definitions.
+  source_operation: openapi/ensighten-manage-api-openapi.yml#postManageDatadefinitionsSearch
+  consequence: low
+- name: search_event_definitions
+  description: Search event definitions.
+  source_operation: openapi/ensighten-manage-api-openapi.yml#getManageEvents
+  consequence: low
+- name: search_labels
+  description: Search labels across ERN-addressable resources.
+  source_operation: openapi/ensighten-manage-api-openapi.yml#postManageLabelsSearch
+  consequence: low
+- name: search_users
+  description: Search Manage console users.
+  source_operation: openapi/ensighten-manage-api-openapi.yml#postManageUsersSearch
+  consequence: low
+- name: list_tdn_jobs
+  description: List Tag Delivery Network jobs.
+  source_operation: openapi/ensighten-manage-api-openapi.yml#getManageTdnJobs
+  consequence: low
+- name: get_tdn_job
+  description: Get a TDN job by id.
+  source_operation: openapi/ensighten-manage-api-openapi.yml#getManageTdnJobsId
+  consequence: low
+tool_count: 16
+rest_operations_total: 65

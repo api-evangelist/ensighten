@@ -1,0 +1,37 @@
+generated: '2026-08-13'
+method: probed
+source: >-
+  lastUpdated metadata of
+  https://jsapi.apiary.io/apis/manageexternalapi/blueprint, plus probes of the
+  Apiary change feeds on 2026-08-13
+api: Ensighten Manage API
+scheme: none
+current_version: null
+note: >-
+  Ensighten publishes NO dated changelog or release notes for the Manage API.
+  The API is unversioned, so there is nothing for a changelog to enumerate. The
+  only change signal that exists is the blueprint's own lastUpdated timestamp
+  and the Apiary "API changes" Atom/RSS feeds that Apiary generates
+  automatically for every hosted document — and both of those feed URLs were
+  unreachable when probed.
+entries: []
+entry_count: 0
+change_signal:
+  contract_last_updated: '2026-07-14T18:41:23.848Z'
+  source: >-
+    lastUpdated field of https://jsapi.apiary.io/apis/manageexternalapi/blueprint
+  interpretation: >-
+    The contract was revised about four weeks before this pass, so it is
+    actively maintained — but a consumer cannot tell WHAT changed, when a
+    breaking change lands, or which behaviour a given date corresponds to.
+feeds_probed:
+- url: https://manageexternalapi.docs.apiary.io/feed
+  status: 000
+  note: Atom feed advertised in the docs page <link rel="alternate">; connection failed.
+- url: https://manageexternalapi.docs.apiary.io/feed/rss
+  status: 502
+  note: RSS feed advertised in the docs page; Apiary returned a gateway error.
+gap: >-
+  This is the clearest single remediation available to Ensighten: publish dated
+  release notes for the Manage API. The contract changes, the provider knows
+  when, and today no consumer or agent can see it.

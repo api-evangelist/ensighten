@@ -1,0 +1,129 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://manageexternalapi.docs.apiary.io/ "Additional documentation → Http
+  Response Codes / General Error Response", cross-checked against the 4xx/5xx
+  responses in openapi/ensighten-manage-api-openapi.yml and confirmed by a live
+  unauthenticated probe of https://manage-api.ensighten.com/manage/spaces
+format: custom-json-envelope
+rfc9457: false
+note: >-
+  The Manage API does NOT use RFC 9457 problem+json. It publishes a single
+  consistent proprietary error envelope with the media type application/json.
+  The envelope was verified live: an unauthenticated GET to
+  https://manage-api.ensighten.com/manage/spaces on 2026-08-13 returned HTTP 401
+  with exactly this shape.
+envelope:
+  media_type: application/json
+  fields:
+  - name: code
+    type: integer
+    description: Mirrors the HTTP status code.
+  - name: message
+    type: string
+    description: Standard HTTP status text.
+  - name: description
+    type: string
+    description: Specific detail about the error, to help identify the cause.
+  example:
+    code: 400
+    message: Bad Request
+    description: A human-readable description of what went wrong.
+  verified_live:
+    url: https://manage-api.ensighten.com/manage/spaces
+    fetched: '2026-08-13'
+    http_status: 401
+    body:
+      code: 401
+      message: Unauthorized
+      description: The token used in the request is incorrect or has expired.
+problems:
+- status: 200
+  title: OK
+  description: Success!
+- status: 201
+  title: Created
+  description: Successful creation of a resource.
+- status: 204
+  title: No Content
+  description: The request was processed successfully, but no response body is needed.
+- status: 400
+  title: Bad Request
+  description: >-
+    The request was invalid or cannot be otherwise served. This usually means
+    malformed syntax or a bad query.
+  remediation: Validate the request body against the documented JSON Schema for the resource.
+- status: 401
+  title: Unauthorized
+  description: Authentication credentials were missing or incorrect.
+  remediation: >-
+    Supply a valid X-API-Key header, or refresh the bearer token via POST
+    /auth/token. Verified live on 2026-08-13.
+- status: 403
+  title: Forbidden
+  description: The request is understood, but it has been refused or access is not allowed.
+  remediation: >-
+    Check the Manage Roles assigned to the user or API Key — authorization is
+    role-based, not scope-based.
+- status: 404
+  title: Not Found
+  description: >-
+    The URI requested is invalid or the resource requested, such as a
+    deployment, does not exist. Search endpoints also return this code when no
+    records match the given search criteria (including when no records of that
+    type exist in the account yet).
+  remediation: >-
+    IMPORTANT AGENT SEMANTIC — on the search endpoints a 404 means "empty
+    result set", not "error". Treat it as an empty array. This is a documented
+    deviation from conventional REST semantics and is called out inline on the
+    Search spaces, Search deployments, Search conditions, Search data
+    definitions, Search event definitions, Search labels, Search users and
+    Search roles operations.
+- status: 406
+  title: Not Acceptable
+  description: >-
+    Requested representation not available for the resource, such as the Accept
+    header is not valid.
+  remediation: 'Send Accept: application/json.'
+- status: 412
+  title: Precondition Failed
+  description: The request assumes that a pre-condition is met, but is not in this case.
+  remediation: >-
+    Seen on PUT /manage/spaces/{id}/publish — resolve the outstanding condition
+    before republishing.
+- status: 415
+  title: Unsupported Media Type
+  description: >-
+    The request includes data that is not supported, such as the Content-Type
+    header is invalid.
+  remediation: 'Send Content-Type: application/json.'
+- status: 422
+  title: Unprocessable Entity
+  description: >-
+    The data included with the request could not be processed. This usually
+    would mean that invalid JSON was included.
+- status: 429
+  title: Too Many Requests
+  description: >-
+    Returned when a request cannot be served due to rate limit having been
+    exhausted for the resource (RFC 6585).
+  remediation: >-
+    Inspect X-Rate-Limit-Reset for the seconds remaining before the window
+    resets. See rate-limits/ensighten-rate-limits.yml.
+  example:
+    code: 429
+    message: Rate limit ceiling reached
+    description: The maximum number of requests (50) for this resource has been reached. It will be reset in 350 seconds.
+- status: 500
+  title: Internal Server Error
+  description: Something is broken on our end.
+- status: 502
+  title: Bad Gateway
+  description: The service is down or being upgraded.
+- status: 503
+  title: Service Unavailable
+  description: The service is up, but overloaded with requests. Try again later.
+coverage:
+  documented_statuses: 15
+  operations_declaring_4xx: 40
+  operations_total: 65
