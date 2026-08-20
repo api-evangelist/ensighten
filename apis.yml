@@ -73,6 +73,12 @@ apis:
   baseURL: https://manage-api.ensighten.com
   tags:
   - Tag Management
+  - Deployment
+  - SCIM
+  - Provisioning
+  - Data Governance
+  tags_raw:
+  - Tag Management
   - Deployments
   - SCIM
   - Provisioning
