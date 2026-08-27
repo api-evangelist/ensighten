@@ -56,36 +56,33 @@ tags:
 - Privacy Compliance
 - Marketing Technology
 apis:
-- aid: ensighten:manage-api
-  name: Ensighten Manage API
+- aid: ensighten:ensighten-authentication-api
+  name: Ensighten Authentication API
   description: >-
-    The REST Manage API used by Ensighten Manage customers to administer tag
-    management programmatically. Sixty-six operations covering Spaces, Publish
-    Paths, Deployments (create, update, enable/disable, commit/uncommit,
-    archive, merge across spaces), Conditions, Data Definitions, Event
-    Definitions, Labels, Users, Roles, SCIM 2.0 user and group provisioning,
-    Git-enabled space commits, and TDN jobs. Authentication is an X-API-Key
-    header key (prefix ens_) or an OAuth 2.0 Resource Owner Password
-    Credentials bearer token issued by POST /auth/token. Responses use a
-    consistent {code, message, description} error envelope; rate-limited
-    endpoints return X-Rate-Limit-* headers and 429 on exhaustion.
+    Requests using a username and password for authentication follow the Resource Owner Password Flow
+    of the OAuth 2.0
+
+    specification.
+
+
+
+    API Request
+
+    Once a token has been retrieved using the /auth/token process below,  include it in all API calls
+    using the Authorization header.
+
+
+
+    Example
+
+    Authorization: Bearer 2YotnFZFEjr1zCsicMWpAA
   humanURL: https://manageexternalapi.docs.apiary.io/
   baseURL: https://manage-api.ensighten.com
   tags:
-  - Tag Management
-  - Deployment
-  - SCIM
-  - Provisioning
-  - Data Governance
-  tags_raw:
-  - Tag Management
-  - Deployments
-  - SCIM
-  - Provisioning
-  - Data Governance
+  - Authentication
   properties:
   - type: OpenAPI
-    url: openapi/ensighten-manage-api-openapi.yml
+    url: openapi/ensighten-authentication-api-openapi.yml
   - type: APIBlueprint
     url: openapi/_original/ensighten-manage-api-apiary-blueprint.json
   - type: Documentation
@@ -102,8 +99,712 @@ apis:
     url: conventions/ensighten-conventions.yml
   - type: DataModel
     url: data-model/ensighten-data-model.yml
-  - type: Overlay
-    url: overlays/ensighten-manage-api-overlay.yaml
+  - type: Sandbox
+    url: sandbox/ensighten-sandbox.yml
+- aid: ensighten:ensighten-conditions-api
+  name: Ensighten Conditions API
+  description: "CRUD operations with Conditions.\n\n\nImportant Condition specific fields\n\n\n\nField\n\
+    Description\nValid Values\n\n\n\n\nid\nThe condition id\n\n\n\nname\nThe name of the condition\nA\
+    \ name up to 255 characters\n\n\nconditionValues\nCriteria used to define and configure the condition\n\
+    (More information below)\n\n\nmandatedInSpaces\nSpaces where this condition is mandated\n\n\n\ndeployments\n\
+    Deployments that are associated with this condition\n\n\n\nlabels\nInformation regarding the labels\
+    \ associated with the condition\nAn array of labels (e.g. [{\"key\": \"Lifecycle\", \"value\": \"\
+    prod\"}])\n\n\n\nCondition-value specific fields\nA condition can have one or more condition-values,\
+    \ each of which is defined as an object with the following (required) properties \n\n\n\n\n\n\nField\n\
+    Description\nValid Values\n\n\n\n\ntypeId\nIndicates the type of the condition parameter\n2 (Host)\n\
+    \ 4 (Path)\n 7 (Protocol)\n 10 (Query Pair)\n 11 (Hash Fragment)\n 16 (Platform)\n 18"
+  humanURL: https://manageexternalapi.docs.apiary.io/
+  baseURL: https://manage-api.ensighten.com
+  tags:
+  - Conditions
+  properties:
+  - type: OpenAPI
+    url: openapi/ensighten-conditions-api-openapi.yml
+  - type: APIBlueprint
+    url: openapi/_original/ensighten-manage-api-apiary-blueprint.json
+  - type: Documentation
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: APIReference
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: Authentication
+    url: authentication/ensighten-authentication.yml
+  - type: ErrorCatalog
+    url: errors/ensighten-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/ensighten-rate-limits.yml
+  - type: Conventions
+    url: conventions/ensighten-conventions.yml
+  - type: DataModel
+    url: data-model/ensighten-data-model.yml
+  - type: Sandbox
+    url: sandbox/ensighten-sandbox.yml
+- aid: ensighten:ensighten-data-definitions-api
+  name: Ensighten Data Definitions API
+  description: "CRUD operations with Data Definitions.\n\n\nData Definitions specific fields\n\n\n\nField\n\
+    Required\nDescription\nValid Values\n\n\n\n\nname\nY\nThe name of the definition\nA name up to 255\
+    \ characters\n\n\ncollection\nY\nThe name for a collection of definitions\nA name up to 255 characters\n\
+    \n\nsource\nY\nThe source of the definition\nAccepted values are: \n Manage \n Mobile \n Pulse \n\
+    \ One \n Attribution \n Inform \n Privacy\n\n\nextractor\nY\nJavascript code for extraction\nMust\
+    \ be a valid Javascript function. e.g. function(){try{return Bootstrapper.data.extract('ec','cookie')}catch(e){return\
+    \ 'error'}}\n\n\ndescription\nN\nA description\n\n\n\nenabled\nN\nIs the definition enabled\nA boolean\
+    \ value\n\n\npersistence\nN\nIndicates the persistence type\nDefaults to \"page\" if none provided\
+    \ \n Accepted values are: \n instance \n page \n session \n visitor\n\n\nmetaDesc\nN\nIndicates the\
+    \ comparator to use for mapping the type to value\n\n\n\ntransformation\nN\nJavascr"
+  humanURL: https://manageexternalapi.docs.apiary.io/
+  baseURL: https://manage-api.ensighten.com
+  tags:
+  - Data Definitions
+  properties:
+  - type: OpenAPI
+    url: openapi/ensighten-data-definitions-api-openapi.yml
+  - type: APIBlueprint
+    url: openapi/_original/ensighten-manage-api-apiary-blueprint.json
+  - type: Documentation
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: APIReference
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: Authentication
+    url: authentication/ensighten-authentication.yml
+  - type: ErrorCatalog
+    url: errors/ensighten-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/ensighten-rate-limits.yml
+  - type: Conventions
+    url: conventions/ensighten-conventions.yml
+  - type: DataModel
+    url: data-model/ensighten-data-model.yml
+  - type: Sandbox
+    url: sandbox/ensighten-sandbox.yml
+- aid: ensighten:ensighten-deployments-api
+  name: Ensighten Deployments API
+  description: "CRUD operations with Deployments.\n\n\nImportant Deployment specific fields\n\n\n\nField\n\
+    Description\nValid Values\n\n\n\n\nid\nThe deployment id\n\n\n\nname\nThe name of the deployment\n\
+    A name up to 255 characters\n\n\nspaceId\nThe id of the space this deployment is available in\n\n\n\
+    \nspaceName\nThe name of the space this deployment is available in\n\n\n\nstatus\nRefers to state\
+    \ the deployment is in.\nThis is sent back as a field in response to GET deployment.\ndisabled_uncommitted\
+    \ \n disabled_committed \n disabled_published \n  enabled_uncommitted \n enabled_committed \n enabled_published\
+    \ \n deleted_uncommitted \n deleted_committed \n deleted_published \n archived_uncommitted \n archived_committed\
+    \ \n archived_published\n\n\npreviousStatus\nRefers to the state the deployment was in before the\
+    \ last action was performed\n\n\n\nlastPublishedStatus\nRefers to the state the deployment was in\
+    \ when it was published last\n\n\n\nlastAction\nRefers to the"
+  humanURL: https://manageexternalapi.docs.apiary.io/
+  baseURL: https://manage-api.ensighten.com
+  tags:
+  - Deployments
+  properties:
+  - type: OpenAPI
+    url: openapi/ensighten-deployments-api-openapi.yml
+  - type: APIBlueprint
+    url: openapi/_original/ensighten-manage-api-apiary-blueprint.json
+  - type: Documentation
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: APIReference
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: Authentication
+    url: authentication/ensighten-authentication.yml
+  - type: ErrorCatalog
+    url: errors/ensighten-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/ensighten-rate-limits.yml
+  - type: Conventions
+    url: conventions/ensighten-conventions.yml
+  - type: DataModel
+    url: data-model/ensighten-data-model.yml
+  - type: Sandbox
+    url: sandbox/ensighten-sandbox.yml
+- aid: ensighten:ensighten-event-definitions-api
+  name: Ensighten Event Definitions API
+  description: "CRUD operations with Event Definitions.\n\n\nEvent Definition specific fields\n\n\n\n\
+    Field\nDescription\nValid Values\n\n\n\n\nname\nThe name of the definition\nA name up to 255 characters\n\
+    \n\ntype\nIndicates the type of the event definition\npage_action \n data \n named\n\n\nconditionIds\n\
+    A list of valid condition ids to associate with the event\nAn array of ids (e.g. [100, 101])\n\n\n\
+    elementType\nIndicates the element type\ncss_selector \n element_id \n element_class \n javascript\n\
+    \n\ntrigger\nIndicates what action should trigger the event\nclick \n mousedown \n mouseup \n mouseover\
+    \ \n mouseout \n mousemove \n contextmenu \n dblclick\n\n\ndata\nData to associate with a page action\
+    \ event\ne.g. \"a.add-to-cart\"\n\n\ndataDefinitionId\nThe id for a valid data definition\n\n\n\n\
+    labels\nInformation regarding the labels associated with the event\nAn array of labels (e.g. [{\"\
+    key\": \"Lifecycle\", \"value\": \"prod\"}])\n\n\n\nEvent Definition types and allowed fiel"
+  humanURL: https://manageexternalapi.docs.apiary.io/
+  baseURL: https://manage-api.ensighten.com
+  tags:
+  - Event Definitions
+  properties:
+  - type: OpenAPI
+    url: openapi/ensighten-event-definitions-api-openapi.yml
+  - type: APIBlueprint
+    url: openapi/_original/ensighten-manage-api-apiary-blueprint.json
+  - type: Documentation
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: APIReference
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: Authentication
+    url: authentication/ensighten-authentication.yml
+  - type: ErrorCatalog
+    url: errors/ensighten-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/ensighten-rate-limits.yml
+  - type: Conventions
+    url: conventions/ensighten-conventions.yml
+  - type: DataModel
+    url: data-model/ensighten-data-model.yml
+  - type: Sandbox
+    url: sandbox/ensighten-sandbox.yml
+- aid: ensighten:ensighten-git-api
+  name: Ensighten GIT API
+  description: >-
+    Operations specific to Git enabled spaces.
+
+
+
+    Git specific fields
+
+
+
+
+    Field
+
+    Description
+
+    Valid Values
+
+
+
+
+
+    commitId
+
+    Commit ID
+
+    A SHA-1 hash, 40 characters long
+  humanURL: https://manageexternalapi.docs.apiary.io/
+  baseURL: https://manage-api.ensighten.com
+  tags:
+  - GIT
+  properties:
+  - type: OpenAPI
+    url: openapi/ensighten-git-api-openapi.yml
+  - type: APIBlueprint
+    url: openapi/_original/ensighten-manage-api-apiary-blueprint.json
+  - type: Documentation
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: APIReference
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: Authentication
+    url: authentication/ensighten-authentication.yml
+  - type: ErrorCatalog
+    url: errors/ensighten-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/ensighten-rate-limits.yml
+  - type: Conventions
+    url: conventions/ensighten-conventions.yml
+  - type: DataModel
+    url: data-model/ensighten-data-model.yml
+  - type: Sandbox
+    url: sandbox/ensighten-sandbox.yml
+- aid: ensighten:ensighten-labels-api
+  name: Ensighten Labels API
+  description: "CRUD operations with Labels.\n\n\nLabel specific fields\n\n\n\nField\nDescription\nValid\
+    \ Values\n\n\n\n\nkey\nThe key of the label\nA string up to 128 characters. Should only contain alphanumerics\
+    \ (a-z, A-Z, 0-9), periods, +, =, :, @, _, or -\n\n\nvalue\nThe value of the label\nA string up to\
+    \ 255 characters. Should only contain alphanumerics (a-z, A-Z, 0-9), periods, +, =, :, @, _, or -\n\
+    \n\nresources\nAn array of unique identifiers for the resources.\nEach resource is referenced by an\
+    \ Ensighten Resource Name (ERN in the format: ern:ens:manage::{resource-type}:{resource-id}\n\n\n\n\
+    Ensighten Resource Names (ERNs)\nEnsighten Resource Names (ERNs) provide a standardized way to uniquely\
+    \ identify resources across the Ensighten platform. Every ERN follows a consistent structure that\
+    \ encodes the namespace, service, resource type, and unique identifier.\n\n\nFormat\n\n\nern:ens:manage::{resource-type}:{resource-id}\n\
+    \n\n- \n{resource-t"
+  humanURL: https://manageexternalapi.docs.apiary.io/
+  baseURL: https://manage-api.ensighten.com
+  tags:
+  - Labels
+  properties:
+  - type: OpenAPI
+    url: openapi/ensighten-labels-api-openapi.yml
+  - type: APIBlueprint
+    url: openapi/_original/ensighten-manage-api-apiary-blueprint.json
+  - type: Documentation
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: APIReference
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: Authentication
+    url: authentication/ensighten-authentication.yml
+  - type: ErrorCatalog
+    url: errors/ensighten-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/ensighten-rate-limits.yml
+  - type: Conventions
+    url: conventions/ensighten-conventions.yml
+  - type: DataModel
+    url: data-model/ensighten-data-model.yml
+  - type: Sandbox
+    url: sandbox/ensighten-sandbox.yml
+- aid: ensighten:ensighten-publish-paths-api
+  name: Ensighten Publish Paths API
+  description: >-
+    CRUD operations with Publish Paths.
+
+
+
+    For further details or guidance on configuring Publish Path settings, please consult our Help Center
+    article available here.
+
+
+
+    Publish Path specific fields
+
+
+
+
+    Field
+
+    Required
+
+    Description
+
+    Valid Values
+
+
+
+
+
+    name
+
+    Y
+
+    The name of the publish path
+
+    A name up to 30 characters
+
+
+
+    codeGen
+
+    N
+
+    Code generation settings for the publish path
+
+    An object containing codegen configuration (see below)
+
+
+
+
+    Codegen specific fields
+
+    These fields are nested within the codeGen object. If the codeGen object is omitted on create, the
+    defaults indicated below will be applied. On update, only the fields provided will be modified.
+
+
+
+
+
+
+    Field
+
+    Required
+
+    Description
+
+    Valid Values
+
+
+
+
+
+    namespace
+
+    N
+
+    Parent object reference for the publish path
+
+    A name up to 30 characters
+
+
+    Defaults to "Bootstrapper" if none provided
+
+
+
+    versionId
+
+    N
+
+    The id of the Bootstrap version name. Versions V1 through V8 are depr
+  humanURL: https://manageexternalapi.docs.apiary.io/
+  baseURL: https://manage-api.ensighten.com
+  tags:
+  - Publish Paths
+  properties:
+  - type: OpenAPI
+    url: openapi/ensighten-publish-paths-api-openapi.yml
+  - type: APIBlueprint
+    url: openapi/_original/ensighten-manage-api-apiary-blueprint.json
+  - type: Documentation
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: APIReference
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: Authentication
+    url: authentication/ensighten-authentication.yml
+  - type: ErrorCatalog
+    url: errors/ensighten-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/ensighten-rate-limits.yml
+  - type: Conventions
+    url: conventions/ensighten-conventions.yml
+  - type: DataModel
+    url: data-model/ensighten-data-model.yml
+  - type: Sandbox
+    url: sandbox/ensighten-sandbox.yml
+- aid: ensighten:ensighten-roles-api
+  name: Ensighten Roles API
+  description: >-
+    CRUD operations with Roles.
+
+
+
+    Role specific fields
+
+
+
+
+    Field
+
+    Description
+
+    Valid Values
+
+
+
+
+
+    name
+
+    Unique identifier for the role
+
+    Up to 255 characters; Role name should only contain alphanumerics (a-z, A-Z, 0-9), periods, commas,
+    +, =, @, _, or -"
+
+
+
+    creationDate
+
+    Date the role was created
+
+
+
+
+    modifiedDate
+
+    Date the role was updated
+  humanURL: https://manageexternalapi.docs.apiary.io/
+  baseURL: https://manage-api.ensighten.com
+  tags:
+  - Roles
+  properties:
+  - type: OpenAPI
+    url: openapi/ensighten-roles-api-openapi.yml
+  - type: APIBlueprint
+    url: openapi/_original/ensighten-manage-api-apiary-blueprint.json
+  - type: Documentation
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: APIReference
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: Authentication
+    url: authentication/ensighten-authentication.yml
+  - type: ErrorCatalog
+    url: errors/ensighten-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/ensighten-rate-limits.yml
+  - type: Conventions
+    url: conventions/ensighten-conventions.yml
+  - type: DataModel
+    url: data-model/ensighten-data-model.yml
+  - type: Sandbox
+    url: sandbox/ensighten-sandbox.yml
+- aid: ensighten:ensighten-scim-2-0-api
+  name: Ensighten SCIM 2.0 API
+  description: >-
+    SCIM2 (System for Cross-domain Identity Management) is a specification that automates user and group
+    identity provisioning across cloud-based applications and services using SSO and Identity Providers.
+    These SCIM2 API's enable user and group management through dedicated resources. SCIM follows RESTful
+    principles, using HTTP methods with schema-defined payloads that include attributes and values.
+
+
+
+
+    While using the SCIM APIs, set the value of the Accept header as application/scim+json.
+
+
+
+
+
+    It is suggested to authenticate with the APIs using Authorization: Bearer ens_01.... However, the
+    use of X-API-KEY: ens_01... is also supported.
+
+
+
+
+    SCIM 2.0 User specific fields
+
+
+
+
+    Field
+
+    Description
+
+    Valid Values
+
+
+
+
+
+    userName
+
+    Unique identifier for the user
+
+    Up to 255 characters; cannot include <, >, :, ~, +, or spaces
+
+
+
+    name
+
+    User's name object containing givenName and familyName
+
+    Object with givenName and
+  humanURL: https://manageexternalapi.docs.apiary.io/
+  baseURL: https://manage-api.ensighten.com
+  tags:
+  - SCIM 2.0
+  properties:
+  - type: OpenAPI
+    url: openapi/ensighten-scim-2-0-api-openapi.yml
+  - type: APIBlueprint
+    url: openapi/_original/ensighten-manage-api-apiary-blueprint.json
+  - type: Documentation
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: APIReference
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: Authentication
+    url: authentication/ensighten-authentication.yml
+  - type: ErrorCatalog
+    url: errors/ensighten-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/ensighten-rate-limits.yml
+  - type: Conventions
+    url: conventions/ensighten-conventions.yml
+  - type: DataModel
+    url: data-model/ensighten-data-model.yml
+  - type: Sandbox
+    url: sandbox/ensighten-sandbox.yml
+- aid: ensighten:ensighten-spaces-api
+  name: Ensighten Spaces API
+  description: >-
+    CRUD operations with Spaces.
+
+
+
+    Space specific fields
+
+
+
+
+    Field
+
+    Required
+
+    Description
+
+    Valid Values
+
+
+
+
+
+    name
+
+    Y
+
+    The name of the space
+
+    A name up to 255 characters
+
+
+
+    publishPaths
+
+    Y
+
+    A list of either existing paths (provide id) or new ones (provide name)
+
+    An array of paths (e.g. [{"id": 1665}, {"publishPath": "stage"}])
+
+
+
+    mandatedConditionIds
+
+    N
+
+    A list of valid condition ids to associate with the space
+
+    An array of ids (e.g. [67275, 67228])
+
+
+
+    mandatedConditions
+
+    N
+
+    A list of conditions associated with this deployment
+
+    An array of objects containing condition id and name (e.g. [{"id": 51234, "name": "demoAllPages"}])
+
+
+
+    mandatedDeployments
+
+    N
+
+    A list of deployments mandated by the space
+
+    An array of objects containing deployment id, deployment name, space id and space name (e.g. [{"id":
+    51234, "name": "demoAllPages", "spaceId": 1234, "spaceName": "example"}])
+
+
+
+
+    JSON Schema
+
+    Conforms to JSON schema draft v4
+  humanURL: https://manageexternalapi.docs.apiary.io/
+  baseURL: https://manage-api.ensighten.com
+  tags:
+  - Spaces
+  properties:
+  - type: OpenAPI
+    url: openapi/ensighten-spaces-api-openapi.yml
+  - type: APIBlueprint
+    url: openapi/_original/ensighten-manage-api-apiary-blueprint.json
+  - type: Documentation
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: APIReference
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: Authentication
+    url: authentication/ensighten-authentication.yml
+  - type: ErrorCatalog
+    url: errors/ensighten-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/ensighten-rate-limits.yml
+  - type: Conventions
+    url: conventions/ensighten-conventions.yml
+  - type: DataModel
+    url: data-model/ensighten-data-model.yml
+  - type: Sandbox
+    url: sandbox/ensighten-sandbox.yml
+- aid: ensighten:ensighten-tdn-api
+  name: Ensighten TDN API
+  description: >-
+    Retrieve TDN job information
+
+
+
+    JSON Schema
+
+    Conforms to JSON schema draft v4 specifications
+
+
+
+    {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "description": "Get job response",
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "version": {
+                "type": "integer"
+            },
+            "user": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name"
+                ]
+            },
+            "space": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+  humanURL: https://manageexternalapi.docs.apiary.io/
+  baseURL: https://manage-api.ensighten.com
+  tags:
+  - TDN
+  properties:
+  - type: OpenAPI
+    url: openapi/ensighten-tdn-api-openapi.yml
+  - type: APIBlueprint
+    url: openapi/_original/ensighten-manage-api-apiary-blueprint.json
+  - type: Documentation
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: APIReference
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: Authentication
+    url: authentication/ensighten-authentication.yml
+  - type: ErrorCatalog
+    url: errors/ensighten-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/ensighten-rate-limits.yml
+  - type: Conventions
+    url: conventions/ensighten-conventions.yml
+  - type: DataModel
+    url: data-model/ensighten-data-model.yml
+  - type: Sandbox
+    url: sandbox/ensighten-sandbox.yml
+- aid: ensighten:ensighten-users-api
+  name: Ensighten Users API
+  description: "CRUD operations with Users.\n\n\nUser specific fields\n\n\n\nField\nDescription\nValid\
+    \ Values\n\n\n\n\nusername\nUnique identifier for the user\nUp to 255 characters; cannot include <,\
+    \ >, :, ~, +, or spaces\n\n\nfirstName\nUser's first name\nUp to 255 characters; only alphanumeric\
+    \ characters, spaces, and hyphens allowed\n\n\nlastName\nUser's last name\nUp to 255 characters; only\
+    \ alphanumeric characters, spaces, and hyphens allowed\n\n\nemail\nUser's email address\nA valid email\
+    \ format is required\n\n\nsendNotification\nIndicates whether to send a welcome email\nBoolean value,\
+    \ default is false if not specified\n\n\nmultiFactorAuth\nIs MFA enabled\nA string, defaults to \"\
+    disable\" if not specified \n Accepted values are: \n \"enable\" \n \"disable\"\n\n\nroleIds\nA list\
+    \ of valid role ids assigned to the user\nAn array of integer IDs (e.g., [100, 101])\n\n\nisActive\n\
+    Indicates whether the user account is active\nBoolean value, default is true if no"
+  humanURL: https://manageexternalapi.docs.apiary.io/
+  baseURL: https://manage-api.ensighten.com
+  tags:
+  - Users
+  properties:
+  - type: OpenAPI
+    url: openapi/ensighten-users-api-openapi.yml
+  - type: APIBlueprint
+    url: openapi/_original/ensighten-manage-api-apiary-blueprint.json
+  - type: Documentation
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: APIReference
+    url: https://manageexternalapi.docs.apiary.io/
+  - type: Authentication
+    url: authentication/ensighten-authentication.yml
+  - type: ErrorCatalog
+    url: errors/ensighten-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/ensighten-rate-limits.yml
+  - type: Conventions
+    url: conventions/ensighten-conventions.yml
+  - type: DataModel
+    url: data-model/ensighten-data-model.yml
   - type: Sandbox
     url: sandbox/ensighten-sandbox.yml
 maintainers:
@@ -112,6 +813,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/ensighten-manage-api-overlay.yaml
 - type: Website
   url: https://cheq.ai/ensighten/
 - type: Login
