@@ -1,0 +1,516 @@
+openapi: 3.2.0
+info:
+  title: Ensighten Manage Spaces API
+  version: 1.0.0
+  description: "This is the REST Manage API that can be used by Ensighten Manage customers.\n\n\nThere are currently two ways to authenticate through the Manage API: API Key and Username / Password.\n\n\nAll API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.\n\n\nSupported Entities\n\n- \nSpaces\n\n\n\n\n- \nPublish Paths\n\n\n\n\n- \nDeployments\n\n\n\n\n- \nConditions\n\n\n\n\n- \nData Definitions\n\n\n\n\n- \nEvent Definitions\n\n\n\n\n- \nUsers\n\n\n\n\n- \nRoles\n\n\n\n\n- \nSCIM 2.0\n\n\n\n\n- \nGit\n\n\n\n\n- \nTDN"
+  contact:
+    name: Ensighten Support
+    url: https://help.ensighten.com/hc/en-us
+  x-derived-from: API Blueprint published by Ensighten at https://manageexternalapi.docs.apiary.io/
+  x-blueprint-last-updated: '2026-07-14T18:41:23.848Z'
+servers:
+- url: https://manage-api.ensighten.com
+  description: Production (from the Apiary blueprint urls.production)
+- url: https://private-anon-6a32b48ac3-manageexternalapi.apiary-mock.com
+  description: Apiary anonymous mock server (example payloads only)
+security:
+- ApiKeyAuth: []
+- BearerAuth: []
+tags:
+- name: Spaces
+  description: 'CRUD operations with Spaces.
+
+
+
+    Space specific fields
+
+
+
+
+    Field
+
+    Required
+
+    Description
+
+    Valid Values
+
+
+
+
+
+    name
+
+    Y
+
+    The name of the space
+
+    A name up to 255 characters
+
+
+
+    publishPaths
+
+    Y
+
+    A list of either existing paths (provide id) or new ones (provide name)
+
+    An array of paths (e.g. [{"id": 1665}, {"publishPath": "stage"}])
+
+
+
+    mandatedConditionIds
+
+    N
+
+    A list of valid condition ids to associate with the space
+
+    An array of ids (e.g. [67275, 67228])
+
+
+
+    mandatedConditions
+
+    N
+
+    A list of conditions associated with this deployment
+
+    An array of objects containing condition id and name (e.g. [{"id": 51234, "name": "demoAllPages"}])
+
+
+
+    mandatedDeployments
+
+    N
+
+    A list of deployments mandated by the space
+
+    An array of objects containing deployment id, deployment name, space id and space name (e.g. [{"id": 51234, "name": "demoAllPages", "spaceId": 1234, "spaceName": "example"}])
+
+
+
+
+    JSON Schema
+
+    Conforms to JSON schema draft v4 '
+paths:
+  /manage/spaces:
+    get:
+      operationId: getManageSpaces
+      summary: Search spaces
+      tags:
+      - Spaces
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: A search with no matching records returns 404 Not Found instead of an empty array. Treat this 404 as an empty result set.
+      parameters:
+      - name: name
+        in: query
+        required: false
+        description: Get spaces with the name.
+        schema:
+          type: string
+        example: myspace
+      - name: publishPath
+        in: query
+        required: false
+        description: get spaces that are associated with a specific publish path.
+        schema:
+          type: string
+        example: mypath
+      - name: page
+        in: query
+        required: false
+        description: Get a specific page
+        schema:
+          type: number
+        example: '1'
+      - name: per_page
+        in: query
+        required: false
+        description: Limit the per page results and defaults to 10 with a maximum of 50.
+        schema:
+          type: number
+        example: '10'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+              - id: 606
+                name: stage
+                mandatedConditionIds:
+                - 67275
+                - 67228
+                mandatedConditions:
+                - id: 67275
+                  name: tr_aug5_condition
+                - id: 67228
+                  name: tr_sep5_condition
+                publishPaths:
+                - id: 1665
+                  publishPath: stage
+                lastPublished: '2015-05-17T04:00:26.000Z'
+                mandatedDeployments: []
+              - id: 607
+                name: prod
+                mandatedConditionIds:
+                - 67275
+                - 67228
+                mandatedConditions:
+                - id: 67275
+                  name: tr_aug5_condition
+                - id: 67228
+                  name: tr_sep5_condition
+                publishPaths:
+                - id: 1666
+                  publishPath: prod
+                lastPublished: '2015-07-15T04:12:26.000Z'
+                mandatedDeployments:
+                - id: 12345
+                  name: d1
+                  spaceId: 54321
+                  spaceName: s1
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No spaces could be found given the passed criteria.
+    post:
+      operationId: postManageSpaces
+      summary: Create a space
+      tags:
+      - Spaces
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: stage
+              publishPaths:
+              - publishPath: stage
+              mandatedConditionIds:
+              - 67275
+              - 67228
+              isGitEnabled: true
+              mandatedDeployments:
+              - deploymentId: 1
+                spaceId: 2
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              example:
+                id: 899
+  /manage/spaces/{id}:
+    get:
+      operationId: getManageSpacesId
+      summary: Get a space by id
+      tags:
+      - Spaces
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the space id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                id: 606
+                name: stage
+                mandatedConditionIds:
+                - 67275
+                - 67228
+                mandatedConditions:
+                - id: 67275
+                  name: tr_aug5_condition
+                - id: 67228
+                  name: tr_sep5_condition
+                publishPaths:
+                - id: 1665
+                  publishPath: stage
+                lastPublished: '2015-05-17T04:00:26.000Z'
+                mandatedDeployments: []
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The space id is invalid
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No spaces could be found given the passed criteria.
+    put:
+      operationId: putManageSpacesId
+      summary: Update a space
+      tags:
+      - Spaces
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: 'When making a request to update an existing space, the publishPath field may only contain existing paths
+
+        that are identified by their id.'
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the space id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: stage
+              publishPaths:
+              - id: 1665
+              mandatedConditionIds:
+              - 67275
+              - 67228
+              mandatedDeployments:
+              - deploymentId: 1
+                spaceId: 2
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The space id is invalid
+    delete:
+      operationId: deleteManageSpacesId
+      summary: Delete a space
+      tags:
+      - Spaces
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the space id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The space id is invalid
+  /manage/spaces/{id}/publish:
+    put:
+      operationId: putManageSpacesIdPublish
+      summary: Publish a space
+      tags:
+      - Spaces
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: 'When publishing a space, the process will start and return an identifier. That identifier
+
+        can be used to call the API in order to check the status of the publish.'
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the space id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                spaceId: 899
+                publishId: '123'
+                requestedDate: '2014-12-19T17:59:08.465Z'
+        '412':
+          description: Precondition Failed
+          content:
+            application/json:
+              example:
+                code: 412
+                message: Precondition Failed
+                description: The space is currently being published and thus can't be published at this time.
+    patch:
+      operationId: patchManageSpacesIdPublish
+      summary: Publish a space - Selective
+      tags:
+      - Spaces
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: 'When publishing a space, the process will start and return an identifier. That identifier
+
+        can be used to call the API in order to check the status of the publish.
+
+
+
+        Selective Publish will only publish the Deployments corresponding to the specified deploymentIds, along with all non-deployment items (Conditions, Data Definitions, ...).
+
+
+
+        All specified Deployments must be committed before publishing.'
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the space id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              deploymentIds:
+              - 123
+              - 456
+              - 789
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                spaceId: 1
+                publishId: '222'
+                requestedDate: '2025-02-01T01:02:03.456Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: 'Error on publish: Tag - 123 is not committed.'
+  /manage/spaces/{id}/publish/{publishId}:
+    get:
+      operationId: getManageSpacesIdPublishPublishid
+      summary: Publish Status
+      tags:
+      - Spaces
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: Use a publish identifier to check the status of the publish action.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the space id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      - name: publishId
+        in: path
+        required: true
+        description: The identifier for the publish action.
+        schema:
+          type: string
+        example: '123'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                spaceId: 1
+                publishId: '123'
+                complete: true
+                success: true
+  /manage/spaces/{id}/commit/{commitId}:
+    get:
+      operationId: getManageSpacesIdCommitCommitid
+      summary: Commit Status
+      tags:
+      - Spaces
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: Use a commit identifier to check the status of the commit action.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the space id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      - name: commitId
+        in: path
+        required: true
+        description: The identifier for the commit action.
+        schema:
+          type: string
+        example: '456'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                spaceId: 1
+                commitId: '456'
+                complete: true
+                success: true
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API Key created in the Admin > API Keys page of Manage. Keys are prefixed 'ens_'. Not accepted on /auth/token.
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Access token obtained from POST /auth/token (OAuth 2.0 Resource Owner Password Credentials flow).
+    OAuth2Password:
+      type: oauth2
+      flows:
+        password:
+          tokenUrl: https://manage-api.ensighten.com/auth/token
+          scopes: {}
+      description: Resource Owner Password Credentials flow. No OAuth scopes are documented; authorization is governed by Manage Roles assigned to the user or API Key.

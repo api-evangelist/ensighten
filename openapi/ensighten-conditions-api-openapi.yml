@@ -1,0 +1,529 @@
+openapi: 3.2.0
+info:
+  title: Ensighten Manage Conditions API
+  version: 1.0.0
+  description: "This is the REST Manage API that can be used by Ensighten Manage customers.\n\n\nThere are currently two ways to authenticate through the Manage API: API Key and Username / Password.\n\n\nAll API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.\n\n\nSupported Entities\n\n- \nSpaces\n\n\n\n\n- \nPublish Paths\n\n\n\n\n- \nDeployments\n\n\n\n\n- \nConditions\n\n\n\n\n- \nData Definitions\n\n\n\n\n- \nEvent Definitions\n\n\n\n\n- \nUsers\n\n\n\n\n- \nRoles\n\n\n\n\n- \nSCIM 2.0\n\n\n\n\n- \nGit\n\n\n\n\n- \nTDN"
+  contact:
+    name: Ensighten Support
+    url: https://help.ensighten.com/hc/en-us
+  x-derived-from: API Blueprint published by Ensighten at https://manageexternalapi.docs.apiary.io/
+  x-blueprint-last-updated: '2026-07-14T18:41:23.848Z'
+servers:
+- url: https://manage-api.ensighten.com
+  description: Production (from the Apiary blueprint urls.production)
+- url: https://private-anon-6a32b48ac3-manageexternalapi.apiary-mock.com
+  description: Apiary anonymous mock server (example payloads only)
+security:
+- ApiKeyAuth: []
+- BearerAuth: []
+tags:
+- name: Conditions
+  description: "CRUD operations with Conditions.\n\n\nImportant Condition specific fields\n\n\n\nField\nDescription\nValid Values\n\n\n\n\nid\nThe condition id\n\n\n\nname\nThe name of the condition\nA name up to 255 characters\n\n\nconditionValues\nCriteria used to define and configure the condition\n(More information below)\n\n\nmandatedInSpaces\nSpaces where this condition is mandated\n\n\n\ndeployments\nDeployments that are associated with this condition\n\n\n\nlabels\nInformation regarding the labels associated with the condition\nAn array of labels (e.g. [{\"key\": \"Lifecycle\", \"value\": \"prod\"}])\n\n\n\nCondition-value specific fields\nA condition can have one or more condition-values, each of which is defined as an object with the following (required) properties \n\n\n\n\n\n\nField\nDescription\nValid Values\n\n\n\n\ntypeId\nIndicates the type of the condition parameter\n2 (Host)\n 4 (Path)\n 7 (Protocol)\n 10 (Query Pair)\n 11 (Hash Fragment)\n 16 (Platform)\n 18 "
+paths:
+  /manage/conditions/search:
+    post:
+      operationId: postManageConditionsSearch
+      summary: Search Conditions
+      tags:
+      - Conditions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: A search with no matching records returns 404 Not Found instead of an empty array (even when the account has no conditions yet). Treat this 404 as an empty result set.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              fields: id, name, conditionValues, modifyDate, creationDate
+              sort: +name
+              filters:
+                spaceId:
+                - 67250
+                - -1
+                labels:
+                  Lifecycle:
+                  - prod
+                  - stage
+                eventNames:
+                - event1
+                dataDefNames:
+                - dataDef1
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+              - id: 647250
+                name: Checkout Condition
+                conditionValues:
+                - typeId: 7
+                  value: https?
+                  comparatorId: 3
+                  modifierIds: []
+                modifyDate: '2013-04-25T17:43:48.000Z'
+                creationDate: '2013-04-25T17:43:48.000Z'
+                spaceId: -1
+                spaceName: Global
+                labels:
+                - key: Lifecycle
+                  value: prod
+                mandatedInSpaces:
+                - id: 1
+                  name: dev
+                - id: 2
+                  name: stage
+                deployments:
+                - spaceId: 1
+                  spaceName: dev
+                  id: 2
+                  name: Sample Deployment
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No conditions could be found given the passed criteria.
+  /manage/conditions/{id}:
+    get:
+      operationId: getManageConditionsId
+      summary: Get a condition by id
+      tags:
+      - Conditions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the condition to perform the action with.
+        schema:
+          type: number
+        example: '1'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                id: 67250
+                name: Checkout Condition
+                conditionValues:
+                - typeId: 7
+                  comparatorId: 3
+                  value: https?
+                  modifierIds: []
+                - typeId: 2
+                  comparatorId: 3
+                  value: ^(highres\.io)$
+                  modifierIds:
+                  - 1
+                  - 2
+                - typeId: 11
+                  comparatorId: 3
+                  value: ^()$
+                  modifierIds:
+                  - 1
+                - typeId: 4
+                  comparatorId: 3
+                  value: ^(/demo)$
+                  modifierIds: []
+                - typeId: 30
+                  comparatorId: 2
+                  dataDefId: 1750
+                  value: '999'
+                  modifierIds:
+                  - 2
+                labels:
+                - key: Lifecycle
+                  value: prod
+                mandatedInSpaces:
+                - id: 4076
+                  name: NewMerchants
+                - id: 12864
+                  name: Demo
+                deployments:
+                - spaceId: 14909
+                  spaceName: Archives
+                  id: 360117
+                  name: ProductLaunch
+                - spaceId: 5572
+                  spaceName: chrome
+                  id: 343809
+                  name: VisualConfirmation
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The condition id is invalid
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No conditions could be found given the passed criteria.
+    put:
+      operationId: putManageConditionsId
+      summary: Update / Edit a condition
+      tags:
+      - Conditions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: id path parameter
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: Checkout Condition
+              conditionValues:
+              - typeId: 7
+                value: https?
+                comparatorId: 3
+                modifierIds: []
+              - typeId: 2
+                value: ^(google\.com)$
+                comparatorId: 3
+                modifierIds: []
+              - typeId: 4
+                value: ^(/finance)$
+                comparatorId: 3
+                modifierIds: []
+              - typeId: 11
+                value: ^()$
+                comparatorId: 3
+                modifierIds: []
+              - typeId: 33
+                value: google.com
+                comparatorId: 0
+                modifierIds: []
+              - typeId: 10
+                comparatorId: 0
+                modifierIds: []
+                queryParam:
+                  value: ^q$
+                  modifierIds: []
+                  comparatorId: 3
+                queryValue:
+                  name: Query Value
+                  value: ^(goog)$
+                  modifierIds: []
+                  comparatorId: 3
+              - typeId: 19
+                value: IN,US
+                comparatorId: 1
+                modifierIds: []
+              - typeId: 18
+                value: '2014-04-14T00:00:00.000Z'
+                comparatorId: 13
+                modifierIds: []
+              - typeId: 18
+                value: '2014-04-18T21:00:00.000Z'
+                comparatorId: 12
+                modifierIds: []
+              - typeId: 28
+                value: 0,2,4,6
+                comparatorId: 1
+                modifierIds: []
+              - typeId: 20
+                value: 10.0.1.5
+                comparatorId: 16
+                modifierIds: []
+              - typeId: 20
+                value: 10.0.1.1
+                comparatorId: 17
+                modifierIds: []
+              - typeId: 20
+                value: 10.0.1.23
+                comparatorId: 18
+                modifierIds: []
+              - typeId: 26
+                value: Firefox,Opera
+                comparatorId: 1
+                modifierIds: []
+              - typeId: 16
+                value: OSX,Linux
+                comparatorId: 1
+                modifierIds: []
+              spaceIds:
+              - 12345
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The condition id is invalid
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                code: 403
+                message: Forbidden
+                description: Access is denied
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: The condition could not be found
+    delete:
+      operationId: deleteManageConditionsId
+      summary: Delete a condition
+      tags:
+      - Conditions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: id path parameter
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The condition id is invalid
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                code: 403
+                message: Forbidden
+                description: Access is denied
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: condition with id - 9999999 could not be deleted - this condition does not exist
+  /manage/conditions:
+    post:
+      operationId: postManageConditions
+      summary: Create a condition
+      tags:
+      - Conditions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: A brand new condition
+              conditionValues:
+              - typeId: 7
+                value: https?
+                comparatorId: 3
+                modifierIds: []
+              - typeId: 2
+                value: ^(google\.com)$
+                comparatorId: 3
+                modifierIds: []
+              - typeId: 4
+                value: ^(/finance)$
+                comparatorId: 3
+                modifierIds: []
+              - typeId: 11
+                value: ^()$
+                comparatorId: 3
+                modifierIds: []
+              - typeId: 33
+                value: google.com
+                comparatorId: 0
+                modifierIds: []
+              - typeId: 10
+                comparatorId: 0
+                modifierIds: []
+                queryParam:
+                  value: ^q$
+                  modifierIds: []
+                  comparatorId: 3
+                queryValue:
+                  value: ^(goog)$
+                  modifierIds: []
+                  comparatorId: 3
+              - typeId: 19
+                value: IN,US
+                comparatorId: 1
+                modifierIds: []
+              - typeId: 18
+                value: '2014-04-14T00:00:00.000Z'
+                comparatorId: 13
+                modifierIds: []
+              - typeId: 18
+                value: '2014-04-18T21:00:00.000Z'
+                comparatorId: 12
+                modifierIds: []
+              - typeId: 28
+                value: 0,2,4,6
+                comparatorId: 1
+                modifierIds: []
+              - typeId: 20
+                value: 10.0.1.5
+                comparatorId: 16
+                modifierIds: []
+              - typeId: 20
+                value: 10.0.1.1
+                comparatorId: 17
+                modifierIds: []
+              - typeId: 20
+                value: 10.0.1.23
+                comparatorId: 18
+                modifierIds: []
+              - typeId: 26
+                value: Firefox,Opera
+                comparatorId: 1
+                modifierIds: []
+              - typeId: 16
+                value: OSX,Linux
+                comparatorId: 1
+                modifierIds: []
+              - typeId: 30
+                comparatorId: 2
+                dataDefId: 1750
+                value: '999'
+                modifierIds:
+                - 2
+              spaceIds:
+              - 12345
+              labels:
+              - key: Lifecycle
+                value: prod
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                id: 9821
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                code: 403
+                message: Forbidden
+                description: Access is denied
+  /manage/space/{spaceId}/conditions:
+    get:
+      operationId: getManageSpaceSpaceidConditions
+      summary: Get space conditions
+      tags:
+      - Conditions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: spaceId
+        in: path
+        required: true
+        description: Numeric spaceId of the space to perform the action with.
+        schema:
+          type: number
+        example: '1'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+              - id: 67250
+                name: Checkout Condition
+                conditionValues:
+                - typeId: 7
+                  comparatorId: 3
+                  value: https?
+                  modifierIds: []
+                - typeId: 2
+                  comparatorId: 3
+                  value: ^(highres\.io)$
+                  modifierIds:
+                  - 1
+                  - 2
+                - typeId: 11
+                  comparatorId: 3
+                  value: ^()$
+                  modifierIds:
+                  - 1
+                - typeId: 4
+                  comparatorId: 3
+                  value: ^(/demo)$
+                  modifierIds: []
+                - typeId: 30
+                  comparatorId: 2
+                  dataDefId: 1750
+                  value: '999'
+                  modifierIds:
+                  - 2
+                labels:
+                - key: Lifecycle
+                  value: prod
+                mandatedInSpaces:
+                - id: 4076
+                  name: NewMerchants
+                - id: 12864
+                  name: Demo
+                deployments:
+                - spaceId: 14909
+                  spaceName: Archives
+                  id: 360117
+                  name: ProductLaunch
+                - spaceId: 5572
+                  spaceName: chrome
+                  id: 343809
+                  name: VisualConfirmation
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API Key created in the Admin > API Keys page of Manage. Keys are prefixed 'ens_'. Not accepted on /auth/token.
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Access token obtained from POST /auth/token (OAuth 2.0 Resource Owner Password Credentials flow).
+    OAuth2Password:
+      type: oauth2
+      flows:
+        password:
+          tokenUrl: https://manage-api.ensighten.com/auth/token
+          scopes: {}
+      description: Resource Owner Password Credentials flow. No OAuth scopes are documented; authorization is governed by Manage Roles assigned to the user or API Key.

@@ -1,0 +1,31 @@
+{
+  "provider": "ensighten",
+  "sources": [
+    "ensighten-manage-api-openapi.yml"
+  ],
+  "outputs": [
+    "ensighten-authentication-api-openapi.yml",
+    "ensighten-conditions-api-openapi.yml",
+    "ensighten-data-definitions-api-openapi.yml",
+    "ensighten-deployments-api-openapi.yml",
+    "ensighten-event-definitions-api-openapi.yml",
+    "ensighten-git-api-openapi.yml",
+    "ensighten-labels-api-openapi.yml",
+    "ensighten-publish-paths-api-openapi.yml",
+    "ensighten-roles-api-openapi.yml",
+    "ensighten-scim-2-0-api-openapi.yml",
+    "ensighten-spaces-api-openapi.yml",
+    "ensighten-tdn-api-openapi.yml",
+    "ensighten-users-api-openapi.yml"
+  ],
+  "archived": [
+    "archived openapi/ensighten-manage-api-openapi.yml"
+  ],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "ensighten-manage-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: written (+13 apis, 13 total)"
+  ],
+  "skipped": []
+}

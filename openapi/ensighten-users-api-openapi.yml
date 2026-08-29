@@ -1,0 +1,293 @@
+openapi: 3.2.0
+info:
+  title: Ensighten Manage Users API
+  version: 1.0.0
+  description: "This is the REST Manage API that can be used by Ensighten Manage customers.\n\n\nThere are currently two ways to authenticate through the Manage API: API Key and Username / Password.\n\n\nAll API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.\n\n\nSupported Entities\n\n- \nSpaces\n\n\n\n\n- \nPublish Paths\n\n\n\n\n- \nDeployments\n\n\n\n\n- \nConditions\n\n\n\n\n- \nData Definitions\n\n\n\n\n- \nEvent Definitions\n\n\n\n\n- \nUsers\n\n\n\n\n- \nRoles\n\n\n\n\n- \nSCIM 2.0\n\n\n\n\n- \nGit\n\n\n\n\n- \nTDN"
+  contact:
+    name: Ensighten Support
+    url: https://help.ensighten.com/hc/en-us
+  x-derived-from: API Blueprint published by Ensighten at https://manageexternalapi.docs.apiary.io/
+  x-blueprint-last-updated: '2026-07-14T18:41:23.848Z'
+servers:
+- url: https://manage-api.ensighten.com
+  description: Production (from the Apiary blueprint urls.production)
+- url: https://private-anon-6a32b48ac3-manageexternalapi.apiary-mock.com
+  description: Apiary anonymous mock server (example payloads only)
+security:
+- ApiKeyAuth: []
+- BearerAuth: []
+tags:
+- name: Users
+  description: "CRUD operations with Users.\n\n\nUser specific fields\n\n\n\nField\nDescription\nValid Values\n\n\n\n\nusername\nUnique identifier for the user\nUp to 255 characters; cannot include <, >, :, ~, +, or spaces\n\n\nfirstName\nUser's first name\nUp to 255 characters; only alphanumeric characters, spaces, and hyphens allowed\n\n\nlastName\nUser's last name\nUp to 255 characters; only alphanumeric characters, spaces, and hyphens allowed\n\n\nemail\nUser's email address\nA valid email format is required\n\n\nsendNotification\nIndicates whether to send a welcome email\nBoolean value, default is false if not specified\n\n\nmultiFactorAuth\nIs MFA enabled\nA string, defaults to \"disable\" if not specified \n Accepted values are: \n \"enable\" \n \"disable\"\n\n\nroleIds\nA list of valid role ids assigned to the user\nAn array of integer IDs (e.g., [100, 101])\n\n\nisActive\nIndicates whether the user account is active\nBoolean value, default is true if no"
+paths:
+  /manage/users/search:
+    post:
+      operationId: postManageUsersSearch
+      summary: Search users
+      tags:
+      - Users
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: A search with no matching records returns 404 Not Found instead of an empty array. Treat this 404 as an empty result set.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              fields: id, account, clientId, email, firstName, lastName, lastLoginTimestamp, multiFactorAuth, name, roles, username, isActive
+              filters:
+                username:
+                - admin
+              page: 1
+              per_page: 10
+              sort: -name
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+              - id: 3811
+                account: example-client
+                clientId: 852
+                email: jane.doe@example.com
+                firstName: Jane
+                lastName: Doe
+                lastLoginTimestamp: '2024-10-10T19:54:01.000Z'
+                multiFactorAuth: disable
+                name: Jane Doe
+                roles:
+                - id: 8515
+                  name: Account-Admin
+                - id: 8516
+                  name: Power User
+                - id: 8518
+                  name: Manage UI
+                - id: 8572
+                  name: Manage Public API
+                - id: 8575
+                  name: Certificates
+                username: jane.doe
+                isActive: true
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No users could be found given the passed criteria.
+  /manage/users/{id}:
+    get:
+      operationId: getManageUsersId
+      summary: Get a user
+      tags:
+      - Users
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the user.
+        schema:
+          type: number
+        example: '3811'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                id: 3811
+                account: example-client
+                clientId: 852
+                email: jane.doe@example.com
+                firstName: Jane
+                lastName: Doe
+                lastLoginTimestamp: '2024-10-10T19:54:01.000Z'
+                multiFactorAuth: disable
+                name: Jane Doe
+                roles:
+                - id: 8515
+                  name: Account-Admin
+                - id: 8516
+                  name: Power User
+                - id: 8518
+                  name: Manage UI
+                - id: 8572
+                  name: Manage Public API
+                - id: 8575
+                  name: Certificates
+                username: jane.doe
+                isActive: true
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The user id is invalid
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: User doesn't exist.
+    put:
+      operationId: putManageUsersId
+      summary: Update a user
+      tags:
+      - Users
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: See the documentation above on User specific fields (exclude sendNotification) for more information on what to provide.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: id path parameter
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              email: jane.doe@example.com
+              firstName: Jane
+              lastName: Doe
+              username: jane.doe
+              roleIds:
+              - 8515
+              - 8516
+              isActive: true
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The user id is invalid
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: User doesn't exist.
+    delete:
+      operationId: deleteManageUsersId
+      summary: Delete a user
+      tags:
+      - Users
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: id path parameter
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The user id is invalid
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: User doesn't exist.
+  /manage/users:
+    post:
+      operationId: postManageUsers
+      summary: Create a user
+      tags:
+      - Users
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              username: jane.doe
+              email: jane.doe@example.com
+              firstName: Jane
+              lastName: Doe
+              multiFactorAuth: enable
+              roleIds:
+              - 8515
+              - 8516
+              sendNotification: true
+              isActive: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              example:
+                id: 3811
+                clientId: 852
+                account: example-client
+                username: jane.doe
+                email: jane.doe@example.com
+                firstName: Jane
+                lastName: Doe
+                multiFactorAuth: enable
+                roles:
+                - id: 8515
+                  name: Account-Admin
+                - id: 8516
+                  name: Power User
+                isActive: true
+        '400':
+          description: Returned when a username already exists for this client.
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: Username already exists for this client.
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API Key created in the Admin > API Keys page of Manage. Keys are prefixed 'ens_'. Not accepted on /auth/token.
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Access token obtained from POST /auth/token (OAuth 2.0 Resource Owner Password Credentials flow).
+    OAuth2Password:
+      type: oauth2
+      flows:
+        password:
+          tokenUrl: https://manage-api.ensighten.com/auth/token
+          scopes: {}
+      description: Resource Owner Password Credentials flow. No OAuth scopes are documented; authorization is governed by Manage Roles assigned to the user or API Key.

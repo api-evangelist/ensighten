@@ -1,0 +1,116 @@
+openapi: 3.2.0
+info:
+  title: Ensighten Manage Roles API
+  version: 1.0.0
+  description: "This is the REST Manage API that can be used by Ensighten Manage customers.\n\n\nThere are currently two ways to authenticate through the Manage API: API Key and Username / Password.\n\n\nAll API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.\n\n\nSupported Entities\n\n- \nSpaces\n\n\n\n\n- \nPublish Paths\n\n\n\n\n- \nDeployments\n\n\n\n\n- \nConditions\n\n\n\n\n- \nData Definitions\n\n\n\n\n- \nEvent Definitions\n\n\n\n\n- \nUsers\n\n\n\n\n- \nRoles\n\n\n\n\n- \nSCIM 2.0\n\n\n\n\n- \nGit\n\n\n\n\n- \nTDN"
+  contact:
+    name: Ensighten Support
+    url: https://help.ensighten.com/hc/en-us
+  x-derived-from: API Blueprint published by Ensighten at https://manageexternalapi.docs.apiary.io/
+  x-blueprint-last-updated: '2026-07-14T18:41:23.848Z'
+servers:
+- url: https://manage-api.ensighten.com
+  description: Production (from the Apiary blueprint urls.production)
+- url: https://private-anon-6a32b48ac3-manageexternalapi.apiary-mock.com
+  description: Apiary anonymous mock server (example payloads only)
+security:
+- ApiKeyAuth: []
+- BearerAuth: []
+tags:
+- name: Roles
+  description: 'CRUD operations with Roles.
+
+
+
+    Role specific fields
+
+
+
+
+    Field
+
+    Description
+
+    Valid Values
+
+
+
+
+
+    name
+
+    Unique identifier for the role
+
+    Up to 255 characters; Role name should only contain alphanumerics (a-z, A-Z, 0-9), periods, commas, +, =, @, _, or -"
+
+
+
+    creationDate
+
+    Date the role was created
+
+
+
+
+    modifiedDate
+
+    Date the role was updated'
+paths:
+  /manage/roles/search:
+    post:
+      operationId: postManageRolesSearch
+      summary: Search roles
+      tags:
+      - Roles
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: A search with no matching records returns 404 Not Found instead of an empty array. Treat this 404 as an empty result set.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              fields: id, name, creationDate, modifiedDate
+              filters:
+                name:
+                - admin
+              page: 1
+              per_page: 10
+              sort: -name
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+              - id: 7928
+                name: Account Admin
+                creationDate: '2023-07-24T19:16:41.000Z'
+                modifiedDate: '2023-07-24T19:16:41.000Z'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No roles could be found given the passed criteria.
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API Key created in the Admin > API Keys page of Manage. Keys are prefixed 'ens_'. Not accepted on /auth/token.
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Access token obtained from POST /auth/token (OAuth 2.0 Resource Owner Password Credentials flow).
+    OAuth2Password:
+      type: oauth2
+      flows:
+        password:
+          tokenUrl: https://manage-api.ensighten.com/auth/token
+          scopes: {}
+      description: Resource Owner Password Credentials flow. No OAuth scopes are documented; authorization is governed by Manage Roles assigned to the user or API Key.

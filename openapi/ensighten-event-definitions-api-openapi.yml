@@ -1,0 +1,353 @@
+openapi: 3.2.0
+info:
+  title: Ensighten Manage Event Definitions API
+  version: 1.0.0
+  description: "This is the REST Manage API that can be used by Ensighten Manage customers.\n\n\nThere are currently two ways to authenticate through the Manage API: API Key and Username / Password.\n\n\nAll API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.\n\n\nSupported Entities\n\n- \nSpaces\n\n\n\n\n- \nPublish Paths\n\n\n\n\n- \nDeployments\n\n\n\n\n- \nConditions\n\n\n\n\n- \nData Definitions\n\n\n\n\n- \nEvent Definitions\n\n\n\n\n- \nUsers\n\n\n\n\n- \nRoles\n\n\n\n\n- \nSCIM 2.0\n\n\n\n\n- \nGit\n\n\n\n\n- \nTDN"
+  contact:
+    name: Ensighten Support
+    url: https://help.ensighten.com/hc/en-us
+  x-derived-from: API Blueprint published by Ensighten at https://manageexternalapi.docs.apiary.io/
+  x-blueprint-last-updated: '2026-07-14T18:41:23.848Z'
+servers:
+- url: https://manage-api.ensighten.com
+  description: Production (from the Apiary blueprint urls.production)
+- url: https://private-anon-6a32b48ac3-manageexternalapi.apiary-mock.com
+  description: Apiary anonymous mock server (example payloads only)
+security:
+- ApiKeyAuth: []
+- BearerAuth: []
+tags:
+- name: Event Definitions
+  description: "CRUD operations with Event Definitions.\n\n\nEvent Definition specific fields\n\n\n\nField\nDescription\nValid Values\n\n\n\n\nname\nThe name of the definition\nA name up to 255 characters\n\n\ntype\nIndicates the type of the event definition\npage_action \n data \n named\n\n\nconditionIds\nA list of valid condition ids to associate with the event\nAn array of ids (e.g. [100, 101])\n\n\nelementType\nIndicates the element type\ncss_selector \n element_id \n element_class \n javascript\n\n\ntrigger\nIndicates what action should trigger the event\nclick \n mousedown \n mouseup \n mouseover \n mouseout \n mousemove \n contextmenu \n dblclick\n\n\ndata\nData to associate with a page action event\ne.g. \"a.add-to-cart\"\n\n\ndataDefinitionId\nThe id for a valid data definition\n\n\n\nlabels\nInformation regarding the labels associated with the event\nAn array of labels (e.g. [{\"key\": \"Lifecycle\", \"value\": \"prod\"}])\n\n\n\nEvent Definition types and allowed fiel"
+paths:
+  /manage/events:
+    get:
+      operationId: getManageEvents
+      summary: Search event definitions
+      tags:
+      - Event Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: '[DEPRECATED] API endpoint to search event definitions was moved to /manage/events/search.
+
+
+
+
+        A search with no matching records returns 404 Not Found instead of an empty array (even when the account has no event definitions yet). Treat this 404 as an empty result set.'
+      parameters:
+      - name: name
+        in: query
+        required: false
+        description: Get definitions with the name.
+        schema:
+          type: string
+        example: Product - Add to Cart Link
+      - name: type
+        in: query
+        required: false
+        description: get definitions that are of a certain type (page_action, data, named).
+        schema:
+          type: string
+        example: page_action
+      - name: page
+        in: query
+        required: false
+        description: Get a specific page
+        schema:
+          type: number
+        example: '1'
+      - name: per_page
+        in: query
+        required: false
+        description: Limit the per page results and defaults to 10 with a maximum of 50.
+        schema:
+          type: number
+        example: '10'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+              - id: 899
+                name: Product - Add to Cart Link
+                type: page_action
+                conditionIds:
+                - 67275
+                - 67228
+                elementType: css_selector
+                data: a.add-to-cart
+                trigger: click
+                fastBinding: true
+                allowIncompleteCalls: true
+                labels:
+                - key: Lifecycle
+                  value: prod
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No event definitions could be found given the passed criteria.
+    post:
+      operationId: postManageEvents
+      summary: Create an event definition
+      tags:
+      - Event Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: 'When creating an event definition, it can be of a specific type. See the documentation above
+
+        from Event Definition types and allowed fields for more information on what to provide.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: My Event Definition
+              type: page_action
+              conditionIds:
+              - 67275
+              - 67228
+              elementType: css_selector
+              data: a.add-to-cart
+              trigger: click
+              fastBinding: true
+              allowIncompleteCalls: true
+              labels:
+              - key: Lifecycle
+                value: prod
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              example:
+                id: 899
+  /manage/events/search:
+    post:
+      operationId: postManageEventsSearch
+      summary: Search event definitions
+      tags:
+      - Event Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: A search with no matching records returns 404 Not Found instead of an empty array (even when the account has no event definitions yet). Treat this 404 as an empty result set.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              fields: id, name, type, modifyDate, conditionIds, elementType, trigger, data, fastBinding, allowIncompleteCalls, dataDefinitionId, fireWhenFirstSet, fireWhenValueUpdated, labels
+              filters:
+                eventName:
+                - Account - Sign Up Complete
+                - Product - Add to Cart Button
+                - Data Layer - Cart Total Updated
+                labels:
+                  Lifecycle:
+                  - prod
+                  - stage
+              page: 1
+              per_page: 10
+              sort: +name
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+              - id: 1
+                name: Account - Sign Up Complete
+                type: named
+                conditionIds:
+                - 111
+                modifyDate: '2026-01-03T03:03:03.000Z'
+                labels:
+                - key: Lifecycle
+                  value: prod
+              - id: 2
+                name: Product - Add to Cart Button
+                type: page_action
+                conditionIds:
+                - 222
+                modifyDate: '2026-01-01T01:01:01.000Z'
+                elementType: css_selector
+                trigger: click
+                data: '#addToCartButton'
+                fastBinding: true
+                allowIncompleteCalls: false
+                labels:
+                - key: Lifecycle
+                  value: prod
+              - id: 3
+                name: Data Layer - Cart Total Updated
+                type: data
+                conditionIds:
+                - 333
+                modifyDate: '2026-01-02T01:02:02.000Z'
+                dataDefinitionId: 12345
+                fireWhenFirstSet: true
+                fireWhenValueUpdated: true
+                labels:
+                - key: Lifecycle
+                  value: prod
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No event definitions could be found given the passed criteria.
+  /manage/events/{id}:
+    get:
+      operationId: getManageEventsId
+      summary: Get an event definition by id
+      tags:
+      - Event Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the event definition id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                id: 899
+                name: My Event Definition
+                type: page_action
+                conditionIds:
+                - 67275
+                - 67228
+                dataDefinitionId: 100
+                elementType: css_selector
+                data: a.add-to-cart
+                trigger: click
+                fastBinding: true
+                allowIncompleteCalls: true
+                fireWhenFirstSet: true
+                fireWhenValueUpdated: true
+                labels:
+                - key: Lifecycle
+                  value: prod
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The event definition id is invalid
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No event definitions could be found given the passed criteria.
+    put:
+      operationId: putManageEventsId
+      summary: Update an event definition
+      tags:
+      - Event Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: 'When updating an event definition, it can be of a specific type. See the documentation above
+
+        from Event Definition types and allowed fields for more information on what to provide.'
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the event definition id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: My Updated Event Definition
+              type: page_action
+              conditionIds:
+              - 67275
+              - 67228
+              elementType: css_selector
+              data: a.add-to-cart
+              trigger: click
+              fastBinding: true
+              allowIncompleteCalls: true
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The event definition id is invalid
+    delete:
+      operationId: deleteManageEventsId
+      summary: Delete an event definition
+      tags:
+      - Event Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the event definition id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The event definition id is invalid
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API Key created in the Admin > API Keys page of Manage. Keys are prefixed 'ens_'. Not accepted on /auth/token.
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Access token obtained from POST /auth/token (OAuth 2.0 Resource Owner Password Credentials flow).
+    OAuth2Password:
+      type: oauth2
+      flows:
+        password:
+          tokenUrl: https://manage-api.ensighten.com/auth/token
+          scopes: {}
+      description: Resource Owner Password Credentials flow. No OAuth scopes are documented; authorization is governed by Manage Roles assigned to the user or API Key.

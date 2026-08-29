@@ -1,0 +1,356 @@
+openapi: 3.2.0
+info:
+  title: Ensighten Manage Data Definitions API
+  version: 1.0.0
+  description: "This is the REST Manage API that can be used by Ensighten Manage customers.\n\n\nThere are currently two ways to authenticate through the Manage API: API Key and Username / Password.\n\n\nAll API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.\n\n\nSupported Entities\n\n- \nSpaces\n\n\n\n\n- \nPublish Paths\n\n\n\n\n- \nDeployments\n\n\n\n\n- \nConditions\n\n\n\n\n- \nData Definitions\n\n\n\n\n- \nEvent Definitions\n\n\n\n\n- \nUsers\n\n\n\n\n- \nRoles\n\n\n\n\n- \nSCIM 2.0\n\n\n\n\n- \nGit\n\n\n\n\n- \nTDN"
+  contact:
+    name: Ensighten Support
+    url: https://help.ensighten.com/hc/en-us
+  x-derived-from: API Blueprint published by Ensighten at https://manageexternalapi.docs.apiary.io/
+  x-blueprint-last-updated: '2026-07-14T18:41:23.848Z'
+servers:
+- url: https://manage-api.ensighten.com
+  description: Production (from the Apiary blueprint urls.production)
+- url: https://private-anon-6a32b48ac3-manageexternalapi.apiary-mock.com
+  description: Apiary anonymous mock server (example payloads only)
+security:
+- ApiKeyAuth: []
+- BearerAuth: []
+tags:
+- name: Data Definitions
+  description: "CRUD operations with Data Definitions.\n\n\nData Definitions specific fields\n\n\n\nField\nRequired\nDescription\nValid Values\n\n\n\n\nname\nY\nThe name of the definition\nA name up to 255 characters\n\n\ncollection\nY\nThe name for a collection of definitions\nA name up to 255 characters\n\n\nsource\nY\nThe source of the definition\nAccepted values are: \n Manage \n Mobile \n Pulse \n One \n Attribution \n Inform \n Privacy\n\n\nextractor\nY\nJavascript code for extraction\nMust be a valid Javascript function. e.g. function(){try{return Bootstrapper.data.extract('ec','cookie')}catch(e){return 'error'}}\n\n\ndescription\nN\nA description\n\n\n\nenabled\nN\nIs the definition enabled\nA boolean value\n\n\npersistence\nN\nIndicates the persistence type\nDefaults to \"page\" if none provided \n Accepted values are: \n instance \n page \n session \n visitor\n\n\nmetaDesc\nN\nIndicates the comparator to use for mapping the type to value\n\n\n\ntransformation\nN\nJavascr"
+paths:
+  /manage/datadefinitions/search:
+    post:
+      operationId: postManageDatadefinitionsSearch
+      summary: Search Data Definitions
+      tags:
+      - Data Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: A search with no matching records returns 404 Not Found instead of an empty array (even when the account has no data definitions yet). Treat this 404 as an empty result set.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              fields: id, name, source, collection, enabled, criteriaIds, conditionIds, spaceIds, creationDate, labels
+              sort: +name
+              filters:
+                collection:
+                - PixelCollection
+                criteriaId:
+                - 444
+                labels:
+                  Lifecycle:
+                  - prod
+                  - stage
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+              - id: 273
+                name: vl
+                collection: PixelCollection
+                source: Pulse
+                enabled: false
+                extractor: function(){try{return Bootstrapper.data.extract('vl','cookie')}catch(e){return 'error'}}
+                criteriaIds:
+                - 100
+                - 101
+                conditionIds:
+                - 444
+                spaceIds: []
+                creationDate: '2014-02-12T03:53:57.000Z'
+                fromType: 1
+                fromName: cookieName
+                fromSource: 1
+                labels:
+                - key: Lifecycle
+                  value: prod
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No data definitions could be found given the passed criteria.
+  /manage/datadefinitions/{id}:
+    get:
+      operationId: getManageDatadefinitionsId
+      summary: Get a data definition by id
+      tags:
+      - Data Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the data definition id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                id: 273
+                name: vl
+                collection: PixelCollection
+                source: Pulse
+                description: ''
+                enabled: false
+                persistence: page
+                metaDesc: {}
+                extractor: function(){try{return Bootstrapper.data.extract('vl','cookie')}catch(e){return 'error'}}
+                transformation: ''
+                trigger: Bootstrapper.data.bottomOfBodyTrigger
+                criteriaIds:
+                - 100
+                - 101
+                conditionIds: []
+                spaceIds: []
+                creationDate: '2014-02-12T03:53:57.000Z'
+                fromType: 1
+                fromName: cookieName
+                fromSource: 1
+                labels:
+                - key: Lifecycle
+                  value: prod
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The data definition id is invalid
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: The data definitions could not be found.
+    delete:
+      operationId: deleteManageDatadefinitionsId
+      summary: Delete a data definition
+      tags:
+      - Data Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the data definition id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The data definition id is invalid
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                code: 403
+                message: Forbidden
+                description: The requester does not have permission to make this request.
+    put:
+      operationId: putManageDatadefinitionsId
+      summary: Update a data definition
+      tags:
+      - Data Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: 'See the documentation above on Data Definitions specific fields for more information on what to provide.
+
+        Updating a Data Definition will not affect its state.'
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the data definition id to perform action with.
+        schema:
+          type: number
+        example: '1'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              id: 123
+              name: vl2
+              collection: PixelCollection
+              source: Pulse
+              persistence: session
+              extractor: function(){try{return Bootstrapper.data.extract('vl2','cookie')}catch(e){return 'error'}}
+              criteriaIds:
+              - 100
+              - 101
+              fromType: 1
+              fromName: cookieName
+              fromSource: 1
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The data definition id is invalid
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                code: 403
+                message: Forbidden
+                description: The requester does not have permission to make this request.
+  /manage/datadefinitions:
+    post:
+      operationId: postManageDatadefinitions
+      summary: Create a data definition
+      tags:
+      - Data Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: vl2
+              collection: PixelCollection
+              source: Pulse
+              persistence: session
+              extractor: function(){try{return Bootstrapper.data.extract('vl2','cookie')}catch(e){return 'error'}}
+              criteriaIds:
+              - 100
+              - 101
+              fromType: 1
+              fromName: cookieName
+              fromSource: 1
+              labels:
+              - key: Lifecycle
+                value: prod
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                id: 273
+                name: vl2
+                collection: PixelCollection
+                source: Pulse
+                description: ''
+                enabled: false
+                persistence: session
+                metaDesc: {}
+                extractor: function(){try{return Bootstrapper.data.extract('vl2','cookie')}catch(e){return 'error'}}
+                transformation: ''
+                trigger: Bootstrapper.data.bottomOfBodyTrigger
+                criteriaIds:
+                - 100
+                - 101
+                conditionIds: []
+                spaceIds: []
+                labels:
+                - key: Lifecycle
+                  value: prod
+                creationDate: '2014-02-12T03:53:57.000Z'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                code: 403
+                message: Forbidden
+                description: The requester does not have permission to make this request.
+  /manage/datadefinitions/{id}/{action}:
+    put:
+      operationId: putManageDatadefinitionsIdAction
+      summary: Enable / Disable a Data Definition
+      tags:
+      - Data Definitions
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Numeric id of the data definition to perform action with.
+        schema:
+          type: number
+        example: '273'
+      - name: action
+        in: path
+        required: true
+        description: String value to indicate if its an enable or a disable
+        schema:
+          type: string
+        example: enable
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: The data definition id or action is invalid
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              example:
+                code: 403
+                message: Forbidden
+                description: The requester does not have permission to make this request.
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API Key created in the Admin > API Keys page of Manage. Keys are prefixed 'ens_'. Not accepted on /auth/token.
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Access token obtained from POST /auth/token (OAuth 2.0 Resource Owner Password Credentials flow).
+    OAuth2Password:
+      type: oauth2
+      flows:
+        password:
+          tokenUrl: https://manage-api.ensighten.com/auth/token
+          scopes: {}
+      description: Resource Owner Password Credentials flow. No OAuth scopes are documented; authorization is governed by Manage Roles assigned to the user or API Key.

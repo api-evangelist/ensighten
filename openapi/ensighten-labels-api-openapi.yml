@@ -1,0 +1,151 @@
+openapi: 3.2.0
+info:
+  title: Ensighten Manage Labels API
+  version: 1.0.0
+  description: "This is the REST Manage API that can be used by Ensighten Manage customers.\n\n\nThere are currently two ways to authenticate through the Manage API: API Key and Username / Password.\n\n\nAll API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.\n\n\nSupported Entities\n\n- \nSpaces\n\n\n\n\n- \nPublish Paths\n\n\n\n\n- \nDeployments\n\n\n\n\n- \nConditions\n\n\n\n\n- \nData Definitions\n\n\n\n\n- \nEvent Definitions\n\n\n\n\n- \nUsers\n\n\n\n\n- \nRoles\n\n\n\n\n- \nSCIM 2.0\n\n\n\n\n- \nGit\n\n\n\n\n- \nTDN"
+  contact:
+    name: Ensighten Support
+    url: https://help.ensighten.com/hc/en-us
+  x-derived-from: API Blueprint published by Ensighten at https://manageexternalapi.docs.apiary.io/
+  x-blueprint-last-updated: '2026-07-14T18:41:23.848Z'
+servers:
+- url: https://manage-api.ensighten.com
+  description: Production (from the Apiary blueprint urls.production)
+- url: https://private-anon-6a32b48ac3-manageexternalapi.apiary-mock.com
+  description: Apiary anonymous mock server (example payloads only)
+security:
+- ApiKeyAuth: []
+- BearerAuth: []
+tags:
+- name: Labels
+  description: "CRUD operations with Labels.\n\n\nLabel specific fields\n\n\n\nField\nDescription\nValid Values\n\n\n\n\nkey\nThe key of the label\nA string up to 128 characters. Should only contain alphanumerics (a-z, A-Z, 0-9), periods, +, =, :, @, _, or -\n\n\nvalue\nThe value of the label\nA string up to 255 characters. Should only contain alphanumerics (a-z, A-Z, 0-9), periods, +, =, :, @, _, or -\n\n\nresources\nAn array of unique identifiers for the resources.\nEach resource is referenced by an Ensighten Resource Name (ERN in the format: ern:ens:manage::{resource-type}:{resource-id}\n\n\n\nEnsighten Resource Names (ERNs)\nEnsighten Resource Names (ERNs) provide a standardized way to uniquely identify resources across the Ensighten platform. Every ERN follows a consistent structure that encodes the namespace, service, resource type, and unique identifier.\n\n\nFormat\n\n\nern:ens:manage::{resource-type}:{resource-id}\n\n\n- \n{resource-t"
+paths:
+  /manage/labels/search:
+    post:
+      operationId: postManageLabelsSearch
+      summary: Search Labels
+      tags:
+      - Labels
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: A search with no matching records returns 404 Not Found instead of an empty array (even when the account has no labels yet). Treat this 404 as an empty result set.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              filters:
+                resources: []
+                labels:
+                  Lifecycle: []
+                  Owner:
+                  - marketing
+              sort: -resource
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+              - resource: ern:ens:manage::deployment:space/789/deployment/1011
+                labels:
+                - key: Lifecycle
+                  value: stage
+                - key: Owner
+                  value: marketing
+              - resource: ern:ens:manage::deployment:space/123/deployment/456
+                labels:
+                - key: Lifecycle
+                  value: prod
+                - key: Owner
+                  value: marketing
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                code: 400
+                message: Bad Request
+                description: Input validation error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                code: 404
+                message: Not Found
+                description: No labels could be found given the passed criteria.
+  /manage/labels/batch/assign:
+    post:
+      operationId: postManageLabelsBatchAssign
+      summary: Batch Assign Labels
+      tags:
+      - Labels
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              resources:
+              - ern:ens:manage::deployment:space/1234/deployment/5678
+              labels:
+              - key: Lifecycle
+                value: prod
+              - key: Owner
+                value: marketing
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                errors: {}
+  /manage/labels/batch/remove:
+    post:
+      operationId: postManageLabelsBatchRemove
+      summary: Batch Remove Labels
+      tags:
+      - Labels
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              resources:
+              - ern:ens:manage::deployment:space/1234/deployment/5678
+              keys:
+              - Owner
+              - Lifecycle
+              - Vendor
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                errors: {}
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API Key created in the Admin > API Keys page of Manage. Keys are prefixed 'ens_'. Not accepted on /auth/token.
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Access token obtained from POST /auth/token (OAuth 2.0 Resource Owner Password Credentials flow).
+    OAuth2Password:
+      type: oauth2
+      flows:
+        password:
+          tokenUrl: https://manage-api.ensighten.com/auth/token
+          scopes: {}
+      description: Resource Owner Password Credentials flow. No OAuth scopes are documented; authorization is governed by Manage Roles assigned to the user or API Key.

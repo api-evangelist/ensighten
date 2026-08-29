@@ -1,0 +1,484 @@
+openapi: 3.2.0
+info:
+  title: Ensighten Manage SCIM 2.0 API
+  version: 1.0.0
+  description: "This is the REST Manage API that can be used by Ensighten Manage customers.\n\n\nThere are currently two ways to authenticate through the Manage API: API Key and Username / Password.\n\n\nAll API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.\n\n\nSupported Entities\n\n- \nSpaces\n\n\n\n\n- \nPublish Paths\n\n\n\n\n- \nDeployments\n\n\n\n\n- \nConditions\n\n\n\n\n- \nData Definitions\n\n\n\n\n- \nEvent Definitions\n\n\n\n\n- \nUsers\n\n\n\n\n- \nRoles\n\n\n\n\n- \nSCIM 2.0\n\n\n\n\n- \nGit\n\n\n\n\n- \nTDN"
+  contact:
+    name: Ensighten Support
+    url: https://help.ensighten.com/hc/en-us
+  x-derived-from: API Blueprint published by Ensighten at https://manageexternalapi.docs.apiary.io/
+  x-blueprint-last-updated: '2026-07-14T18:41:23.848Z'
+servers:
+- url: https://manage-api.ensighten.com
+  description: Production (from the Apiary blueprint urls.production)
+- url: https://private-anon-6a32b48ac3-manageexternalapi.apiary-mock.com
+  description: Apiary anonymous mock server (example payloads only)
+security:
+- ApiKeyAuth: []
+- BearerAuth: []
+tags:
+- name: SCIM 2.0
+  description: 'SCIM2 (System for Cross-domain Identity Management) is a specification that automates user and group identity provisioning across cloud-based applications and services using SSO and Identity Providers. These SCIM2 API''s enable user and group management through dedicated resources. SCIM follows RESTful principles, using HTTP methods with schema-defined payloads that include attributes and values.
+
+
+
+
+    While using the SCIM APIs, set the value of the Accept header as application/scim+json.
+
+
+
+
+
+    It is suggested to authenticate with the APIs using Authorization: Bearer ens_01.... However, the use of X-API-KEY: ens_01... is also supported.
+
+
+
+
+    SCIM 2.0 User specific fields
+
+
+
+
+    Field
+
+    Description
+
+    Valid Values
+
+
+
+
+
+    userName
+
+    Unique identifier for the user
+
+    Up to 255 characters; cannot include <, >, :, ~, +, or spaces
+
+
+
+    name
+
+    User''s name object containing givenName and familyName
+
+    Object with givenName and '
+paths:
+  /scim2/Users:
+    post:
+      operationId: postScim2Users
+      summary: Create a User
+      tags:
+      - SCIM 2.0
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              userName: jane.doe
+              name:
+                givenName: Jane
+                familyName: Doe
+              emails:
+              - value: jane.doe@example.com
+                type: work
+              active: true
+              groups:
+              - value: '8520'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/scim+json:
+              example:
+                meta:
+                  resourceType: User
+                id: '1234'
+                userName: jane.doe
+                displayName: Jane Doe
+                name:
+                  givenName: Jane
+                  familyName: Doe
+                emails:
+                - value: jane.doe@example.com
+                  type: work
+                active: true
+                groups:
+                - value: '8520'
+                  display: group1
+                schemas:
+                - urn:ietf:params:scim:schemas:core:2.0:User
+    get:
+      operationId: getScim2Users
+      summary: Search Users
+      tags:
+      - SCIM 2.0
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/scim+json:
+              example:
+                totalResults: 1
+                itemsPerPage: 10
+                startIndex: 1
+                schemas:
+                - urn:ietf:params:scim:api:messages:2.0:ListResponse
+                Resources:
+                - meta:
+                    resourceType: User
+                  id: 2819c223-7f76-453a-919d-413861904646
+                  userName: jane.doe
+                  name:
+                    givenName: Jane
+                    familyName: Doe
+                  emails:
+                  - value: jane.doe@example.com
+                    type: work
+                  active: true
+                  groups:
+                  - value: '8520'
+                    display: group1
+                  schemas:
+                  - urn:ietf:params:scim:schemas:core:2.0:User
+  /scim2/Users/{id}:
+    get:
+      operationId: getScim2UsersId
+      summary: Get a User by id
+      tags:
+      - SCIM 2.0
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier of the user.
+        schema:
+          type: integer
+        example: '123'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/scim+json:
+              example:
+                meta:
+                  resourceType: User
+                id: '1234'
+                userName: jane.doe
+                displayName: Jane Doe
+                name:
+                  givenName: Jane
+                  familyName: Doe
+                emails:
+                - value: jane.doe@example.com
+                  type: work
+                active: true
+                groups:
+                - value: '8520'
+                  display: group1
+                schemas:
+                - urn:ietf:params:scim:schemas:core:2.0:User
+    put:
+      operationId: putScim2UsersId
+      summary: Update a User (PUT)
+      tags:
+      - SCIM 2.0
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier of the user.
+        schema:
+          type: integer
+        example: '123'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name:
+                givenName: Jane
+                familyName: Doe
+              emails:
+              - value: jane.doe@example.com
+                type: work
+              active: true
+              groups:
+              - value: '8520'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/scim+json:
+              example:
+                meta:
+                  resourceType: User
+                id: '1234'
+                userName: jane.doe
+                displayName: Jane Doe
+                name:
+                  givenName: Jane
+                  familyName: Doe
+                emails:
+                - value: jane.doe@example.com
+                  type: work
+                active: true
+                groups:
+                - value: '8520'
+                  display: group1
+                schemas:
+                - urn:ietf:params:scim:schemas:core:2.0:User
+    delete:
+      operationId: deleteScim2UsersId
+      summary: Delete a User
+      tags:
+      - SCIM 2.0
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier of the user.
+        schema:
+          type: integer
+        example: '123'
+      responses:
+        '204':
+          description: No Content
+    patch:
+      operationId: patchScim2UsersId
+      summary: Update a User (PATCH)
+      tags:
+      - SCIM 2.0
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier of the user.
+        schema:
+          type: integer
+        example: '123'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              schemas:
+              - urn:ietf:params:scim:api:messages:2.0:PatchOp
+              Operations:
+              - op: replace
+                path: name.familyName
+                value: Smith
+              - op: replace
+                path: emails[type eq "work"].value
+                value: jane.smith@example.com
+              - op: replace
+                path: active
+                value: true
+              - op: add
+                path: groups
+                value:
+                - value: '8521'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/scim+json:
+              example:
+                meta:
+                  resourceType: User
+                id: '1234'
+                userName: jane.doe
+                name:
+                  givenName: Jane
+                  familyName: Smith
+                emails:
+                - value: jane.smith@example.com
+                  type: work
+                active: true
+                groups:
+                - value: '8520'
+                  display: group1
+                - value: '8521'
+                  display: group2
+                schemas:
+                - urn:ietf:params:scim:schemas:core:2.0:User
+  /scim2/Groups:
+    get:
+      operationId: getScim2Groups
+      summary: Search Groups
+      tags:
+      - SCIM 2.0
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/scim+json:
+              example:
+                totalResults: 1
+                itemsPerPage: 10
+                startIndex: 1
+                schemas:
+                - urn:ietf:params:scim:api:messages:2.0:ListResponse
+                Resources:
+                - meta:
+                    resourceType: Group
+                  id: '8520'
+                  displayName: group1
+                  schemas:
+                  - urn:ietf:params:scim:schemas:core:2.0:Group
+  /scim2/Groups/{id}:
+    get:
+      operationId: getScim2GroupsId
+      summary: Get a Group by id
+      tags:
+      - SCIM 2.0
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier of the group.
+        schema:
+          type: integer
+        example: '123'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/scim+json:
+              example:
+                meta:
+                  resourceType: Group
+                id: '123'
+                displayName: Engineering
+                members:
+                - value: '5678'
+                  display: john.doe
+                schemas:
+                - urn:ietf:params:scim:schemas:core:2.0:Group
+    put:
+      operationId: putScim2GroupsId
+      summary: Replace Group Membership
+      tags:
+      - SCIM 2.0
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier of the group.
+        schema:
+          type: integer
+        example: '123'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              displayName: Engineering
+              members:
+              - value: '5678'
+                display: john.doe
+      responses:
+        '200':
+          description: OK
+          content:
+            application/scim+json:
+              example:
+                meta:
+                  resourceType: Group
+                id: '123'
+                displayName: Engineering
+                members:
+                - value: '5678'
+                  display: john.doe
+                schemas:
+                - urn:ietf:params:scim:schemas:core:2.0:Group
+    patch:
+      operationId: patchScim2GroupsId
+      summary: Update Group Membership
+      tags:
+      - SCIM 2.0
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier of the group.
+        schema:
+          type: integer
+        example: '123'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              schemas:
+              - urn:ietf:params:scim:api:messages:2.0:PatchOp
+              Operations:
+              - op: add
+                path: members
+                value:
+                - value: '6789'
+                  display: jane.doe
+              - op: remove
+                path: members[value eq "1234"]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/scim+json:
+              example:
+                meta:
+                  resourceType: Group
+                id: '123'
+                displayName: Product Development
+                members:
+                - value: '6789'
+                  display: jane.doe
+                schemas:
+                - urn:ietf:params:scim:schemas:core:2.0:Group
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API Key created in the Admin > API Keys page of Manage. Keys are prefixed 'ens_'. Not accepted on /auth/token.
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Access token obtained from POST /auth/token (OAuth 2.0 Resource Owner Password Credentials flow).
+    OAuth2Password:
+      type: oauth2
+      flows:
+        password:
+          tokenUrl: https://manage-api.ensighten.com/auth/token
+          scopes: {}
+      description: Resource Owner Password Credentials flow. No OAuth scopes are documented; authorization is governed by Manage Roles assigned to the user or API Key.

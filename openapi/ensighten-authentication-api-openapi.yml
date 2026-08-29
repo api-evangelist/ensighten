@@ -1,0 +1,91 @@
+openapi: 3.2.0
+info:
+  title: Ensighten Manage Authentication API
+  version: 1.0.0
+  description: "This is the REST Manage API that can be used by Ensighten Manage customers.\n\n\nThere are currently two ways to authenticate through the Manage API: API Key and Username / Password.\n\n\nAll API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.\n\n\nSupported Entities\n\n- \nSpaces\n\n\n\n\n- \nPublish Paths\n\n\n\n\n- \nDeployments\n\n\n\n\n- \nConditions\n\n\n\n\n- \nData Definitions\n\n\n\n\n- \nEvent Definitions\n\n\n\n\n- \nUsers\n\n\n\n\n- \nRoles\n\n\n\n\n- \nSCIM 2.0\n\n\n\n\n- \nGit\n\n\n\n\n- \nTDN"
+  contact:
+    name: Ensighten Support
+    url: https://help.ensighten.com/hc/en-us
+  x-derived-from: API Blueprint published by Ensighten at https://manageexternalapi.docs.apiary.io/
+  x-blueprint-last-updated: '2026-07-14T18:41:23.848Z'
+servers:
+- url: https://manage-api.ensighten.com
+  description: Production (from the Apiary blueprint urls.production)
+- url: https://private-anon-6a32b48ac3-manageexternalapi.apiary-mock.com
+  description: Apiary anonymous mock server (example payloads only)
+security:
+- ApiKeyAuth: []
+- BearerAuth: []
+tags:
+- name: Authentication
+  description: 'Requests using a username and password for authentication follow the Resource Owner Password Flow of the OAuth 2.0
+
+    specification.
+
+
+
+    API Request
+
+    Once a token has been retrieved using the /auth/token process below,  include it in all API calls using the Authorization header.
+
+
+
+    Example
+
+    Authorization: Bearer 2YotnFZFEjr1zCsicMWpAA'
+paths:
+  /auth/token:
+    post:
+      operationId: postAuthToken
+      summary: Username/Password/MultiFactor Authentication / Refreshing Access Tokens
+      tags:
+      - Authentication
+      security: []
+      description: 'In order to gain an access token for use with the API a call must be made using a valid account name, user name, and password. If the account is MFA configured, MFA verification code is also needed.
+
+
+
+        The Authorization header contains the Base64 encoded concatenation of the account name, user name, and password.
+
+        For example, the value mycompany:joe:mypassword would be encoded and used in the header value.
+
+
+
+        The MultiFactorAuthentication header is needed if the account is MFA configured which is a 6 digits number that is created from Google Authentication App on the phone.
+
+
+
+        The grant_type of password must be included in the body.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                access_token: 2YotnFZFEjr1zCsicMWpAA
+                token_type: bearer
+                expires_in: 3600
+                refresh_token: tGzv3JOkF0XG5Qx2TlKWIA
+      requestBody:
+        required: true
+        content:
+          application/json:
+            examples: {}
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API Key created in the Admin > API Keys page of Manage. Keys are prefixed 'ens_'. Not accepted on /auth/token.
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Access token obtained from POST /auth/token (OAuth 2.0 Resource Owner Password Credentials flow).
+    OAuth2Password:
+      type: oauth2
+      flows:
+        password:
+          tokenUrl: https://manage-api.ensighten.com/auth/token
+          scopes: {}
+      description: Resource Owner Password Credentials flow. No OAuth scopes are documented; authorization is governed by Manage Roles assigned to the user or API Key.
