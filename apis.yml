@@ -202,6 +202,8 @@ apis:
   humanURL: https://manageexternalapi.docs.apiary.io/
   baseURL: https://manage-api.ensighten.com
   tags:
+  - Deployment
+  tags_raw:
   - Deployments
   properties:
   - type: OpenAPI
@@ -239,6 +241,8 @@ apis:
   humanURL: https://manageexternalapi.docs.apiary.io/
   baseURL: https://manage-api.ensighten.com
   tags:
+  - EventDefinitions
+  tags_raw:
   - Event Definitions
   properties:
   - type: OpenAPI
@@ -291,6 +295,8 @@ apis:
   humanURL: https://manageexternalapi.docs.apiary.io/
   baseURL: https://manage-api.ensighten.com
   tags:
+  - Git
+  tags_raw:
   - GIT
   properties:
   - type: OpenAPI
@@ -797,6 +803,8 @@ apis:
   humanURL: https://manageexternalapi.docs.apiary.io/
   baseURL: https://manage-api.ensighten.com
   tags:
+  - User
+  tags_raw:
   - Users
   properties:
   - type: OpenAPI
