@@ -927,3 +927,5 @@ x-enrichment-not-emitted:
   StatusPage: status.ensighten.com does not resolve; status.cheq.ai returns 403.
   Pricing: cheq.ai/pricing/ returns 404; enterprise contact-sales only.
   Postman: No public Postman collection or workspace was found.
+x-parent: cheq-ai-technologies
+x-relationship: product
