@@ -2,7 +2,71 @@ openapi: 3.2.0
 info:
   title: Ensighten Manage Deployments API
   version: 1.0.0
-  description: "This is the REST Manage API that can be used by Ensighten Manage customers.\n\n\nThere are currently two ways to authenticate through the Manage API: API Key and Username / Password.\n\n\nAll API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.\n\n\nSupported Entities\n\n- \nSpaces\n\n\n\n\n- \nPublish Paths\n\n\n\n\n- \nDeployments\n\n\n\n\n- \nConditions\n\n\n\n\n- \nData Definitions\n\n\n\n\n- \nEvent Definitions\n\n\n\n\n- \nUsers\n\n\n\n\n- \nRoles\n\n\n\n\n- \nSCIM 2.0\n\n\n\n\n- \nGit\n\n\n\n\n- \nTDN"
+  description: 'This is the REST Manage API that can be used by Ensighten Manage customers.
+
+
+    There are currently two ways to authenticate through the Manage API: API Key and Username / Password.
+
+
+    All API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.
+
+
+    Supported Entities
+
+
+    -
+
+    Spaces
+
+
+    -
+
+    Publish Paths
+
+
+    -
+
+    Deployments
+
+
+    -
+
+    Conditions
+
+
+    -
+
+    Data Definitions
+
+
+    -
+
+    Event Definitions
+
+
+    -
+
+    Users
+
+
+    -
+
+    Roles
+
+
+    -
+
+    SCIM 2.0
+
+
+    -
+
+    Git
+
+
+    -
+
+    TDN'
   contact:
     name: Ensighten Support
     url: https://help.ensighten.com/hc/en-us
@@ -18,7 +82,7 @@ security:
 - BearerAuth: []
 tags:
 - name: Deployments
-  description: "CRUD operations with Deployments.\n\n\nImportant Deployment specific fields\n\n\n\nField\nDescription\nValid Values\n\n\n\n\nid\nThe deployment id\n\n\n\nname\nThe name of the deployment\nA name up to 255 characters\n\n\nspaceId\nThe id of the space this deployment is available in\n\n\n\nspaceName\nThe name of the space this deployment is available in\n\n\n\nstatus\nRefers to state the deployment is in.\nThis is sent back as a field in response to GET deployment.\ndisabled_uncommitted \n disabled_committed \n disabled_published \n  enabled_uncommitted \n enabled_committed \n enabled_published \n deleted_uncommitted \n deleted_committed \n deleted_published \n archived_uncommitted \n archived_committed \n archived_published\n\n\npreviousStatus\nRefers to the state the deployment was in before the last action was performed\n\n\n\nlastPublishedStatus\nRefers to the state the deployment was in when it was published last\n\n\n\nlastAction\nRefers to the"
+  description: CRUD operations with Deployments.
 paths:
   /manage/deployments:
     get:
@@ -444,7 +508,7 @@ paths:
   /manage/spaces/{spaceId}/deployments/{id}/{action}:
     put:
       operationId: putManageSpacesSpaceidDeploymentsIdAction
-      summary: Enable / Disable / Commit / Uncommit / Undelete / Archive / Unarchive a Deployment
+      summary: Enable / Disable / Commit / Uncommit / Undelete / Archive / Unarchive a…
       tags:
       - Deployments
       security:

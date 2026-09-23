@@ -2,7 +2,71 @@ openapi: 3.2.0
 info:
   title: Ensighten Manage Data Definitions API
   version: 1.0.0
-  description: "This is the REST Manage API that can be used by Ensighten Manage customers.\n\n\nThere are currently two ways to authenticate through the Manage API: API Key and Username / Password.\n\n\nAll API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.\n\n\nSupported Entities\n\n- \nSpaces\n\n\n\n\n- \nPublish Paths\n\n\n\n\n- \nDeployments\n\n\n\n\n- \nConditions\n\n\n\n\n- \nData Definitions\n\n\n\n\n- \nEvent Definitions\n\n\n\n\n- \nUsers\n\n\n\n\n- \nRoles\n\n\n\n\n- \nSCIM 2.0\n\n\n\n\n- \nGit\n\n\n\n\n- \nTDN"
+  description: 'This is the REST Manage API that can be used by Ensighten Manage customers.
+
+
+    There are currently two ways to authenticate through the Manage API: API Key and Username / Password.
+
+
+    All API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.
+
+
+    Supported Entities
+
+
+    -
+
+    Spaces
+
+
+    -
+
+    Publish Paths
+
+
+    -
+
+    Deployments
+
+
+    -
+
+    Conditions
+
+
+    -
+
+    Data Definitions
+
+
+    -
+
+    Event Definitions
+
+
+    -
+
+    Users
+
+
+    -
+
+    Roles
+
+
+    -
+
+    SCIM 2.0
+
+
+    -
+
+    Git
+
+
+    -
+
+    TDN'
   contact:
     name: Ensighten Support
     url: https://help.ensighten.com/hc/en-us
@@ -18,7 +82,7 @@ security:
 - BearerAuth: []
 tags:
 - name: Data Definitions
-  description: "CRUD operations with Data Definitions.\n\n\nData Definitions specific fields\n\n\n\nField\nRequired\nDescription\nValid Values\n\n\n\n\nname\nY\nThe name of the definition\nA name up to 255 characters\n\n\ncollection\nY\nThe name for a collection of definitions\nA name up to 255 characters\n\n\nsource\nY\nThe source of the definition\nAccepted values are: \n Manage \n Mobile \n Pulse \n One \n Attribution \n Inform \n Privacy\n\n\nextractor\nY\nJavascript code for extraction\nMust be a valid Javascript function. e.g. function(){try{return Bootstrapper.data.extract('ec','cookie')}catch(e){return 'error'}}\n\n\ndescription\nN\nA description\n\n\n\nenabled\nN\nIs the definition enabled\nA boolean value\n\n\npersistence\nN\nIndicates the persistence type\nDefaults to \"page\" if none provided \n Accepted values are: \n instance \n page \n session \n visitor\n\n\nmetaDesc\nN\nIndicates the comparator to use for mapping the type to value\n\n\n\ntransformation\nN\nJavascr"
+  description: CRUD operations with Data Definitions.
 paths:
   /manage/datadefinitions/search:
     post:

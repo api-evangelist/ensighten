@@ -2,7 +2,71 @@ openapi: 3.2.0
 info:
   title: Ensighten Manage Spaces API
   version: 1.0.0
-  description: "This is the REST Manage API that can be used by Ensighten Manage customers.\n\n\nThere are currently two ways to authenticate through the Manage API: API Key and Username / Password.\n\n\nAll API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.\n\n\nSupported Entities\n\n- \nSpaces\n\n\n\n\n- \nPublish Paths\n\n\n\n\n- \nDeployments\n\n\n\n\n- \nConditions\n\n\n\n\n- \nData Definitions\n\n\n\n\n- \nEvent Definitions\n\n\n\n\n- \nUsers\n\n\n\n\n- \nRoles\n\n\n\n\n- \nSCIM 2.0\n\n\n\n\n- \nGit\n\n\n\n\n- \nTDN"
+  description: 'This is the REST Manage API that can be used by Ensighten Manage customers.
+
+
+    There are currently two ways to authenticate through the Manage API: API Key and Username / Password.
+
+
+    All API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.
+
+
+    Supported Entities
+
+
+    -
+
+    Spaces
+
+
+    -
+
+    Publish Paths
+
+
+    -
+
+    Deployments
+
+
+    -
+
+    Conditions
+
+
+    -
+
+    Data Definitions
+
+
+    -
+
+    Event Definitions
+
+
+    -
+
+    Users
+
+
+    -
+
+    Roles
+
+
+    -
+
+    SCIM 2.0
+
+
+    -
+
+    Git
+
+
+    -
+
+    TDN'
   contact:
     name: Ensighten Support
     url: https://help.ensighten.com/hc/en-us
@@ -18,81 +82,7 @@ security:
 - BearerAuth: []
 tags:
 - name: Spaces
-  description: 'CRUD operations with Spaces.
-
-
-
-    Space specific fields
-
-
-
-
-    Field
-
-    Required
-
-    Description
-
-    Valid Values
-
-
-
-
-
-    name
-
-    Y
-
-    The name of the space
-
-    A name up to 255 characters
-
-
-
-    publishPaths
-
-    Y
-
-    A list of either existing paths (provide id) or new ones (provide name)
-
-    An array of paths (e.g. [{"id": 1665}, {"publishPath": "stage"}])
-
-
-
-    mandatedConditionIds
-
-    N
-
-    A list of valid condition ids to associate with the space
-
-    An array of ids (e.g. [67275, 67228])
-
-
-
-    mandatedConditions
-
-    N
-
-    A list of conditions associated with this deployment
-
-    An array of objects containing condition id and name (e.g. [{"id": 51234, "name": "demoAllPages"}])
-
-
-
-    mandatedDeployments
-
-    N
-
-    A list of deployments mandated by the space
-
-    An array of objects containing deployment id, deployment name, space id and space name (e.g. [{"id": 51234, "name": "demoAllPages", "spaceId": 1234, "spaceName": "example"}])
-
-
-
-
-    JSON Schema
-
-    Conforms to JSON schema draft v4 '
+  description: CRUD operations with Spaces.
 paths:
   /manage/spaces:
     get:
@@ -386,9 +376,7 @@ paths:
         can be used to call the API in order to check the status of the publish.
 
 
-
         Selective Publish will only publish the Deployments corresponding to the specified deploymentIds, along with all non-deployment items (Conditions, Data Definitions, ...).
-
 
 
         All specified Deployments must be committed before publishing.'

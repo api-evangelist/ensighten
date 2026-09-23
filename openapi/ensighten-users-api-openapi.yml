@@ -2,7 +2,71 @@ openapi: 3.2.0
 info:
   title: Ensighten Manage Users API
   version: 1.0.0
-  description: "This is the REST Manage API that can be used by Ensighten Manage customers.\n\n\nThere are currently two ways to authenticate through the Manage API: API Key and Username / Password.\n\n\nAll API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.\n\n\nSupported Entities\n\n- \nSpaces\n\n\n\n\n- \nPublish Paths\n\n\n\n\n- \nDeployments\n\n\n\n\n- \nConditions\n\n\n\n\n- \nData Definitions\n\n\n\n\n- \nEvent Definitions\n\n\n\n\n- \nUsers\n\n\n\n\n- \nRoles\n\n\n\n\n- \nSCIM 2.0\n\n\n\n\n- \nGit\n\n\n\n\n- \nTDN"
+  description: 'This is the REST Manage API that can be used by Ensighten Manage customers.
+
+
+    There are currently two ways to authenticate through the Manage API: API Key and Username / Password.
+
+
+    All API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.
+
+
+    Supported Entities
+
+
+    -
+
+    Spaces
+
+
+    -
+
+    Publish Paths
+
+
+    -
+
+    Deployments
+
+
+    -
+
+    Conditions
+
+
+    -
+
+    Data Definitions
+
+
+    -
+
+    Event Definitions
+
+
+    -
+
+    Users
+
+
+    -
+
+    Roles
+
+
+    -
+
+    SCIM 2.0
+
+
+    -
+
+    Git
+
+
+    -
+
+    TDN'
   contact:
     name: Ensighten Support
     url: https://help.ensighten.com/hc/en-us
@@ -18,7 +82,7 @@ security:
 - BearerAuth: []
 tags:
 - name: Users
-  description: "CRUD operations with Users.\n\n\nUser specific fields\n\n\n\nField\nDescription\nValid Values\n\n\n\n\nusername\nUnique identifier for the user\nUp to 255 characters; cannot include <, >, :, ~, +, or spaces\n\n\nfirstName\nUser's first name\nUp to 255 characters; only alphanumeric characters, spaces, and hyphens allowed\n\n\nlastName\nUser's last name\nUp to 255 characters; only alphanumeric characters, spaces, and hyphens allowed\n\n\nemail\nUser's email address\nA valid email format is required\n\n\nsendNotification\nIndicates whether to send a welcome email\nBoolean value, default is false if not specified\n\n\nmultiFactorAuth\nIs MFA enabled\nA string, defaults to \"disable\" if not specified \n Accepted values are: \n \"enable\" \n \"disable\"\n\n\nroleIds\nA list of valid role ids assigned to the user\nAn array of integer IDs (e.g., [100, 101])\n\n\nisActive\nIndicates whether the user account is active\nBoolean value, default is true if no"
+  description: CRUD operations with Users.
 paths:
   /manage/users/search:
     post:

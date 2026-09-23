@@ -1,7 +1,7 @@
 {
   "provider": "ensighten",
   "sources": [
-    "ensighten-manage-api-openapi.yml"
+    "_ae-authored/ensighten-manage-api-openapi.yml"
   ],
   "outputs": [
     "ensighten-authentication-api-openapi.yml",
@@ -18,14 +18,27 @@
     "ensighten-tdn-api-openapi.yml",
     "ensighten-users-api-openapi.yml"
   ],
-  "archived": [
-    "archived openapi/ensighten-manage-api-openapi.yml"
-  ],
+  "archived": [],
   "errors": [],
   "warnings": [],
   "notes": [
+    "sourced from openapi/_original/ (0 archived document(s)); previously refined output at the top level was skipped rather than re-split",
     "ensighten-manage-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "apis.yml register: written (+13 apis, 13 total)"
+    "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "ensighten-authentication-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "ensighten-conditions-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "ensighten-data-definitions-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "ensighten-deployments-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "ensighten-event-definitions-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "ensighten-git-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "ensighten-labels-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "ensighten-publish-paths-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "ensighten-roles-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "ensighten-scim-2-0-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "ensighten-spaces-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "ensighten-tdn-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "ensighten-users-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

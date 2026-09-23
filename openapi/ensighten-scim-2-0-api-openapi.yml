@@ -2,7 +2,71 @@ openapi: 3.2.0
 info:
   title: Ensighten Manage SCIM 2.0 API
   version: 1.0.0
-  description: "This is the REST Manage API that can be used by Ensighten Manage customers.\n\n\nThere are currently two ways to authenticate through the Manage API: API Key and Username / Password.\n\n\nAll API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.\n\n\nSupported Entities\n\n- \nSpaces\n\n\n\n\n- \nPublish Paths\n\n\n\n\n- \nDeployments\n\n\n\n\n- \nConditions\n\n\n\n\n- \nData Definitions\n\n\n\n\n- \nEvent Definitions\n\n\n\n\n- \nUsers\n\n\n\n\n- \nRoles\n\n\n\n\n- \nSCIM 2.0\n\n\n\n\n- \nGit\n\n\n\n\n- \nTDN"
+  description: 'This is the REST Manage API that can be used by Ensighten Manage customers.
+
+
+    There are currently two ways to authenticate through the Manage API: API Key and Username / Password.
+
+
+    All API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.
+
+
+    Supported Entities
+
+
+    -
+
+    Spaces
+
+
+    -
+
+    Publish Paths
+
+
+    -
+
+    Deployments
+
+
+    -
+
+    Conditions
+
+
+    -
+
+    Data Definitions
+
+
+    -
+
+    Event Definitions
+
+
+    -
+
+    Users
+
+
+    -
+
+    Roles
+
+
+    -
+
+    SCIM 2.0
+
+
+    -
+
+    Git
+
+
+    -
+
+    TDN'
   contact:
     name: Ensighten Support
     url: https://help.ensighten.com/hc/en-us
@@ -18,50 +82,7 @@ security:
 - BearerAuth: []
 tags:
 - name: SCIM 2.0
-  description: 'SCIM2 (System for Cross-domain Identity Management) is a specification that automates user and group identity provisioning across cloud-based applications and services using SSO and Identity Providers. These SCIM2 API''s enable user and group management through dedicated resources. SCIM follows RESTful principles, using HTTP methods with schema-defined payloads that include attributes and values.
-
-
-
-
-    While using the SCIM APIs, set the value of the Accept header as application/scim+json.
-
-
-
-
-
-    It is suggested to authenticate with the APIs using Authorization: Bearer ens_01.... However, the use of X-API-KEY: ens_01... is also supported.
-
-
-
-
-    SCIM 2.0 User specific fields
-
-
-
-
-    Field
-
-    Description
-
-    Valid Values
-
-
-
-
-
-    userName
-
-    Unique identifier for the user
-
-    Up to 255 characters; cannot include <, >, :, ~, +, or spaces
-
-
-
-    name
-
-    User''s name object containing givenName and familyName
-
-    Object with givenName and '
+  description: SCIM2 (System for Cross-domain Identity Management) is a specification that automates user and group identity provisioning across cloud-based applications and services using SSO and Identity Providers.
 paths:
   /scim2/Users:
     post:

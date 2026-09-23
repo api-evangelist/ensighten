@@ -2,7 +2,71 @@ openapi: 3.2.0
 info:
   title: Ensighten Manage TDN API
   version: 1.0.0
-  description: "This is the REST Manage API that can be used by Ensighten Manage customers.\n\n\nThere are currently two ways to authenticate through the Manage API: API Key and Username / Password.\n\n\nAll API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.\n\n\nSupported Entities\n\n- \nSpaces\n\n\n\n\n- \nPublish Paths\n\n\n\n\n- \nDeployments\n\n\n\n\n- \nConditions\n\n\n\n\n- \nData Definitions\n\n\n\n\n- \nEvent Definitions\n\n\n\n\n- \nUsers\n\n\n\n\n- \nRoles\n\n\n\n\n- \nSCIM 2.0\n\n\n\n\n- \nGit\n\n\n\n\n- \nTDN"
+  description: 'This is the REST Manage API that can be used by Ensighten Manage customers.
+
+
+    There are currently two ways to authenticate through the Manage API: API Key and Username / Password.
+
+
+    All API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.
+
+
+    Supported Entities
+
+
+    -
+
+    Spaces
+
+
+    -
+
+    Publish Paths
+
+
+    -
+
+    Deployments
+
+
+    -
+
+    Conditions
+
+
+    -
+
+    Data Definitions
+
+
+    -
+
+    Event Definitions
+
+
+    -
+
+    Users
+
+
+    -
+
+    Roles
+
+
+    -
+
+    SCIM 2.0
+
+
+    -
+
+    Git
+
+
+    -
+
+    TDN'
   contact:
     name: Ensighten Support
     url: https://help.ensighten.com/hc/en-us
@@ -18,7 +82,79 @@ security:
 - BearerAuth: []
 tags:
 - name: TDN
-  description: "Retrieve TDN job information\n\n\nJSON Schema\nConforms to JSON schema draft v4 specifications\n\n\n{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"description\": \"Get job response\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"id\": {\n            \"type\": \"string\"\n        },\n        \"version\": {\n            \"type\": \"integer\"\n        },\n        \"user\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"id\": {\n                    \"type\": \"integer\"\n                },\n                \"name\": {\n                    \"type\": \"string\"\n                }\n            },\n            \"required\": [\n                \"id\",\n                \"name\"\n            ]\n        },\n        \"space\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"id\": {\n                    \"type\": \"integer\"\n                },\n                \"name\": {\n               "
+  description: 'Retrieve TDN job information
+
+
+    JSON Schema
+
+    Conforms to JSON schema draft v4 specifications
+
+
+    {
+
+    "$schema": "http://json-schema.org/draft-04/schema#",
+
+    "description": "Get job response",
+
+    "type": "object",
+
+    "properties": {
+
+    "id": {
+
+    "type": "string"
+
+    },
+
+    "version": {
+
+    "type": "integer"
+
+    },
+
+    "user": {
+
+    "type": "object",
+
+    "properties": {
+
+    "id": {
+
+    "type": "integer"
+
+    },
+
+    "name": {
+
+    "type": "string"
+
+    }
+
+    },
+
+    "required": [
+
+    "id",
+
+    "name"
+
+    ]
+
+    },
+
+    "space": {
+
+    "type": "object",
+
+    "properties": {
+
+    "id": {
+
+    "type": "integer"
+
+    },
+
+    "name": {'
 paths:
   /manage/tdn/jobs:
     get:

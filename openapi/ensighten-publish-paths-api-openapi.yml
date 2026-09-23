@@ -2,7 +2,71 @@ openapi: 3.2.0
 info:
   title: Ensighten Manage Publish Paths API
   version: 1.0.0
-  description: "This is the REST Manage API that can be used by Ensighten Manage customers.\n\n\nThere are currently two ways to authenticate through the Manage API: API Key and Username / Password.\n\n\nAll API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.\n\n\nSupported Entities\n\n- \nSpaces\n\n\n\n\n- \nPublish Paths\n\n\n\n\n- \nDeployments\n\n\n\n\n- \nConditions\n\n\n\n\n- \nData Definitions\n\n\n\n\n- \nEvent Definitions\n\n\n\n\n- \nUsers\n\n\n\n\n- \nRoles\n\n\n\n\n- \nSCIM 2.0\n\n\n\n\n- \nGit\n\n\n\n\n- \nTDN"
+  description: 'This is the REST Manage API that can be used by Ensighten Manage customers.
+
+
+    There are currently two ways to authenticate through the Manage API: API Key and Username / Password.
+
+
+    All API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.
+
+
+    Supported Entities
+
+
+    -
+
+    Spaces
+
+
+    -
+
+    Publish Paths
+
+
+    -
+
+    Deployments
+
+
+    -
+
+    Conditions
+
+
+    -
+
+    Data Definitions
+
+
+    -
+
+    Event Definitions
+
+
+    -
+
+    Users
+
+
+    -
+
+    Roles
+
+
+    -
+
+    SCIM 2.0
+
+
+    -
+
+    Git
+
+
+    -
+
+    TDN'
   contact:
     name: Ensighten Support
     url: https://help.ensighten.com/hc/en-us
@@ -18,91 +82,7 @@ security:
 - BearerAuth: []
 tags:
 - name: Publish Paths
-  description: 'CRUD operations with Publish Paths.
-
-
-
-    For further details or guidance on configuring Publish Path settings, please consult our Help Center article available here.
-
-
-
-    Publish Path specific fields
-
-
-
-
-    Field
-
-    Required
-
-    Description
-
-    Valid Values
-
-
-
-
-
-    name
-
-    Y
-
-    The name of the publish path
-
-    A name up to 30 characters
-
-
-
-    codeGen
-
-    N
-
-    Code generation settings for the publish path
-
-    An object containing codegen configuration (see below)
-
-
-
-
-    Codegen specific fields
-
-    These fields are nested within the codeGen object. If the codeGen object is omitted on create, the defaults indicated below will be applied. On update, only the fields provided will be modified.
-
-
-
-
-
-
-    Field
-
-    Required
-
-    Description
-
-    Valid Values
-
-
-
-
-
-    namespace
-
-    N
-
-    Parent object reference for the publish path
-
-    A name up to 30 characters
-
-
-    Defaults to "Bootstrapper" if none provided
-
-
-
-    versionId
-
-    N
-
-    The id of the Bootstrap version name. Versions V1 through V8 are depr'
+  description: CRUD operations with Publish Paths.
 paths:
   /manage/publishpaths/search:
     post:

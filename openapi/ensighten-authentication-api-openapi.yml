@@ -2,7 +2,71 @@ openapi: 3.2.0
 info:
   title: Ensighten Manage Authentication API
   version: 1.0.0
-  description: "This is the REST Manage API that can be used by Ensighten Manage customers.\n\n\nThere are currently two ways to authenticate through the Manage API: API Key and Username / Password.\n\n\nAll API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.\n\n\nSupported Entities\n\n- \nSpaces\n\n\n\n\n- \nPublish Paths\n\n\n\n\n- \nDeployments\n\n\n\n\n- \nConditions\n\n\n\n\n- \nData Definitions\n\n\n\n\n- \nEvent Definitions\n\n\n\n\n- \nUsers\n\n\n\n\n- \nRoles\n\n\n\n\n- \nSCIM 2.0\n\n\n\n\n- \nGit\n\n\n\n\n- \nTDN"
+  description: 'This is the REST Manage API that can be used by Ensighten Manage customers.
+
+
+    There are currently two ways to authenticate through the Manage API: API Key and Username / Password.
+
+
+    All API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.
+
+
+    Supported Entities
+
+
+    -
+
+    Spaces
+
+
+    -
+
+    Publish Paths
+
+
+    -
+
+    Deployments
+
+
+    -
+
+    Conditions
+
+
+    -
+
+    Data Definitions
+
+
+    -
+
+    Event Definitions
+
+
+    -
+
+    Users
+
+
+    -
+
+    Roles
+
+
+    -
+
+    SCIM 2.0
+
+
+    -
+
+    Git
+
+
+    -
+
+    TDN'
   contact:
     name: Ensighten Support
     url: https://help.ensighten.com/hc/en-us
@@ -23,11 +87,9 @@ tags:
     specification.
 
 
-
     API Request
 
-    Once a token has been retrieved using the /auth/token process below,  include it in all API calls using the Authorization header.
-
+    Once a token has been retrieved using the /auth/token process below, include it in all API calls using the Authorization header.
 
 
     Example
@@ -44,15 +106,12 @@ paths:
       description: 'In order to gain an access token for use with the API a call must be made using a valid account name, user name, and password. If the account is MFA configured, MFA verification code is also needed.
 
 
-
         The Authorization header contains the Base64 encoded concatenation of the account name, user name, and password.
 
         For example, the value mycompany:joe:mypassword would be encoded and used in the header value.
 
 
-
         The MultiFactorAuthentication header is needed if the account is MFA configured which is a 6 digits number that is created from Google Authentication App on the phone.
-
 
 
         The grant_type of password must be included in the body.'
