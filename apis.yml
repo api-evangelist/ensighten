@@ -695,9 +695,11 @@ apis:
   humanURL: https://manageexternalapi.docs.apiary.io/
   baseURL: https://manage-api.ensighten.com
   tags:
+  - Spaces
   - Space
   tags_raw:
   - Spaces
+  - Space
   properties:
   - type: OpenAPI
     url: openapi/ensighten-spaces-api-openapi.yml
